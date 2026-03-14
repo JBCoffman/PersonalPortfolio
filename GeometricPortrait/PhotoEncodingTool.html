@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometric Portrait</title>
+    <style>
+        :root {
+            /* Your exact color palette */
+            --color-dark:       #0F1720;
+            --color-deepwater:  #1A2535;
+            --color-gulf:       #6B8E96;
+            --color-gulf-light: #8FABB2;
+            --color-proproot:   #8C9688;
+            --color-seagrass:   #C4A962;
+            --color-oyster:     #EDE9E1;
+            --color-fog:        #F4F6F7;
+        }
+
+        body {
+            background-color: var(--color-fog);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            font-family: sans-serif;
+        }
+
+        #geometric-portrait-canvas {
+            border: 2px solid var(--color-dark);
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="geometric-portrait-canvas"></canvas>
+
+    <script src="https://unpkg.com/delaunator@5.0.0/delaunator.min.js"></script>
+
+    <script>
+        const canvas = document.getElementById('geometric-portrait-canvas');
+        const ctx = canvas.getContext('2d');
+        const image = new Image();
+
+        // 1. Initialize and draw the image onto the canvas to analyze it
+        image.onload = function() {
+            // Set canvas dimensions to match the loaded image
+            canvas.width = image.width;
+            canvas.height = image.height;
+            ctx.drawImage(image, 0, 0);
+
+            // Get the image's pixel data for color mapping
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const pixels = imageData.data;
+
+            // Clear the canvas to prepare for our geometric shapes
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Create a grid of points over the image as our geometry's base
+            const gridSpacing = 20; // Controls the density of the geometry
+            const points = [];
+            for (let y = 0; y < canvas.height; y += gridSpacing) {
+                for (let x = 0; x < canvas.width; x += gridSpacing) {
+                    // Add some randomness to make it look less robotic
+                    const offsetX = (Math.random() - 0.5) * gridSpacing * 0.5;
+                    const offsetY = (Math.random() - 0.5) * gridSpacing * 0.5;
+                    points.push([x + offsetX, y + offsetY]);
+                }
+            }
+
+            // 2. Perform Delaunay triangulation on the generated points
+            const delaunay = new Delaunator(points.flat());
+            const { triangles } = delaunay;
+
+            // Store the final calculated shapes and colors for redrawing during interaction
+            const polygons = [];
+            for (let i = 0; i < triangles.length; i += 3) {
+                const triangle = [
+                    points[triangles[i]],
+                    points[triangles[i+1]],
+                    points[triangles[i+2]]
+                ];
+
+                // 3. Map the color for each triangle
+                const color = getAverageColor(pixels, triangle, canvas.width);
+                polygons.push({ triangle, color });
+            }
+
+            // Initial render
+            drawGeometricPortrait(polygons);
+
+            // 4. Add interaction!
+            canvas.addEventListener('mousemove', (event) => {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = event.clientX - rect.left;
+                const mouseY = event.clientY - rect.top;
+
+                // For simple interaction, let's just shift triangle colors on hover
+                updateInteractiveEffects(polygons, mouseX, mouseY);
+            });
+        };
+
+        // Function to render the geometric patterns
+        function drawGeometricPortrait(polygons) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            polygons.forEach(({ triangle, color }) => {
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.moveTo(triangle[0][0], triangle[0][1]);
+                ctx.lineTo(triangle[1][0], triangle[1][1]);
+                ctx.lineTo(triangle[2][0], triangle[2][1]);
+                ctx.closePath();
+                ctx.fill();
+            });
+        }
+
+        // Example interaction function
+        function updateInteractiveEffects(polygons, mouseX, mouseY) {
+            // Re-render, making triangles close to the mouse brighter
+            polygons.forEach(polygon => {
+                const centroid = getCentroid(polygon.triangle);
+                const distance = Math.sqrt((centroid.x - mouseX)**2 + (centroid.y - mouseY)**2);
+
+                if (distance < 50) { // If the mouse is close...
+                    // Shift color towards a brighter one (e.g., seagrass)
+                    polygon.color = getMappedColor(Math.random() * 255); // Randomly shift for this demo
+                }
+            });
+
+            drawGeometricPortrait(polygons); // Redraw
+        }
+
+        // --- Helper functions for geometric analysis ---
+
+        // Get the average color of the pixels under a specific triangle
+        function getAverageColor(pixels, triangle, width) {
+            const centroid = getCentroid(triangle);
+            const x = Math.round(centroid.x);
+            const y = Math.round(centroid.y);
+
+            // Check if centroid is within canvas bounds
+            if (x < 0 || x >= width || y < 0 || y >= pixels.length / (4 * width)) {
+                return getMappedColor(0); // Fallback color
+            }
+
+            const pixelIndex = (y * width + x) * 4;
+            const r = pixels[pixelIndex];
+            const g = pixels[pixelIndex + 1];
+            const b = pixels[pixelIndex + 2];
+
+            // Use brightness to map to your color palette
+            const brightness = (r + g + b) / 3;
+            return getMappedColor(brightness);
+        }
+
+        // Map brightness to a color from your specific palette
+        function getMappedColor(brightness) {
+            if (brightness < 60) {
+                return getComputedStyle(document.documentElement).getPropertyValue('--color-dark').trim();
+            } else if (brightness < 120) {
+                return getComputedStyle(document.documentElement).getPropertyValue('--color-deepwater').trim();
+            } else if (brightness < 180) {
+                return getComputedStyle(document.documentElement).getPropertyValue('--color-gulf').trim();
+            } else {
+                return getComputedStyle(document.documentElement).getPropertyValue('--color-oyster').trim();
+            }
+        }
+
+        // Calculate the center (centroid) of a triangle
+        function getCentroid(triangle) {
+            return {
+                x: (triangle[0][0] + triangle[1][0] + triangle[2][0]) / 3,
+                y: (triangle[0][1] + triangle[1][1] + triangle[2][1]) / 3
+            };
+        }
+
+        // 5. Load your actual image file! Make sure 'headshot.PNG' exists in the same folder.
+        image.src = 'headshot.PNG';
+
+    </script>
+</body>
+</html>

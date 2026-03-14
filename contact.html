@@ -27,91 +27,90 @@
   </ul>
 </nav>
 
-<!-- PAGE HERO -->
+<!-- PAGE HERO (split: form left, headline right) -->
 <section class="page-hero">
-  <div class="page-hero-inner">
-    <div class="hero-eyebrow">Let's find out if there's a fit</div>
-    <h1>Contact</h1>
-    <p class="page-intro">
-      Most of the right conversations start the same way: someone has a problem they haven't been able to fully articulate, and 30 minutes of structured conversation gets them there. That's the goal.
-    </p>
+  <div class="page-hero-inner" style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp16); align-items: center;">
+
+    <!-- LEFT: Contact Form -->
+    <div>
+      <form class="contact-form" name="contact" method="POST" action="#" data-placeholder="Replace action with your form handler (Netlify, Formspree, etc.)">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-group">
+          <label for="company">Company</label>
+          <input type="text" id="company" name="company" placeholder="Company name (if applicable)">
+        </div>
+        <div class="form-group">
+          <label for="inquiry">Inquiry type</label>
+          <select id="inquiry" name="inquiry">
+            <option value="">Select inquiry type</option>
+            <option value="fractional">Fractional CPO / Advisory / Consulting</option>
+            <option value="fulltime">Senior Full-Time Role</option>
+            <option value="speaking">Speaking / Panel</option>
+            <option value="venture">Venture Conversation</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">What's going on?</label>
+          <textarea id="message" name="message" placeholder="Describe the company, stage, and what you're dealing with. Specificity is appreciated." rows="5" required></textarea>
+        </div>
+        <button type="submit" class="btn-p" style="align-self: flex-start;">Send Message</button>
+        <p style="font-family: var(--font-mono); font-size: .7rem; color: var(--text-secondary); letter-spacing: .04em; margin-top: var(--sp2);">
+          [ Form action needs to be connected to a form handler — Netlify Forms, Formspree, or custom endpoint. ]
+        </p>
+      </form>
+    </div>
+
+    <!-- RIGHT: Headline + subtext -->
+    <div>
+      <h1 class="hero-title">Let's find out<br>if<br><span>there's a fit</span></h1>
+      <p class="page-intro">
+        Most of the right conversations start the same way: someone has a problem they haven't been able to fully articulate, and 30 minutes of structured conversation gets them there. That's the goal.
+      </p>
+    </div>
+
   </div>
 </section>
 
-<!-- 1. INTRO + INQUIRY TYPES -->
+<!-- 1. WHO THIS IS FOR (full width) -->
 <section>
   <div class="wrap">
     <div class="sec-label">Who This Is For</div>
-    <div class="two-col" style="align-items: start;">
-      <div>
-        <div class="bio" style="margin-bottom: var(--sp8);">
-          <p>
-            I respond to everyone who reaches out with a real inquiry. I don't respond to cold outreach from recruiters for roles that don't match this profile, generic partnership pitches, or requests to "pick my brain" without a stated agenda.
-          </p>
-          <p>
-            If you're not sure whether your situation qualifies — reach out anyway. The worst outcome is I suggest someone better suited to your problem.
-          </p>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: var(--sp3);">
-          <div class="card" style="border-left: 3px solid var(--color-gulf);">
-            <div class="card-label">Inquiry type 01</div>
-            <h3>Fractional / Advisory / Consulting</h3>
-            <p>Exploring whether there's a fit for a fractional, advisory, or consulting engagement. Describe the company, the stage, and the problem. I'll tell you quickly whether it's in my zone.</p>
-          </div>
-          <div class="card" style="border-left: 3px solid var(--color-gulf);">
-            <div class="card-label">Inquiry type 02</div>
-            <h3>Senior Full-Time Roles</h3>
-            <p>VP Product, Head of Product, CPO — if the company, stage, and problem match. Include the company, role scope, and why you think there's a fit. Recruiters: include the client name.</p>
-          </div>
-          <div class="card" style="border-left: 3px solid var(--color-gulf);">
-            <div class="card-label">Inquiry type 03</div>
-            <h3>Speaking &amp; Panels</h3>
-            <p>Product strategy, AI product development, product operating models, and scaling product organizations. Describe the event, audience, and what you're hoping attendees walk away with.</p>
-          </div>
-          <div class="card" style="border-left: 3px solid rgba(196,169,98,.5);">
-            <div class="card-label">Inquiry type 04</div>
-            <h3>Venture Conversations</h3>
-            <p>If you're building something and think there's a reason to explore involvement beyond a standard advisory relationship — equity, co-founder, operating role. Be specific about what you're building and what you need.</p>
-          </div>
-        </div>
+    <div class="bio" style="max-width: 72ch; margin-bottom: var(--sp12);">
+      <p>
+        I respond to everyone who reaches out with a real inquiry. I don't respond to cold outreach from recruiters for roles that don't match this profile, generic partnership pitches, or requests to "pick my brain" without a stated agenda.
+      </p>
+      <p>
+        If you're not sure whether your situation qualifies — reach out anyway. The worst outcome is I suggest someone better suited to your problem.
+      </p>
+    </div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp6);">
+      <div class="card" style="border-left: 3px solid var(--color-gulf);">
+        <div class="card-label">Inquiry type 01</div>
+        <h3>Fractional / Advisory / Consulting</h3>
+        <p>Exploring whether there's a fit for a fractional, advisory, or consulting engagement. Describe the company, the stage, and the problem. I'll tell you quickly whether it's in my zone.</p>
       </div>
-
-      <!-- CONTACT FORM -->
-      <div>
-        <div style="font-family: var(--font-mono); font-size: .75rem; text-transform: uppercase; letter-spacing: .1em; color: var(--text-secondary); margin-bottom: var(--sp6);">Send a message</div>
-        <form class="contact-form" name="contact" method="POST" action="#" data-placeholder="Replace action with your form handler (Netlify, Formspree, etc.)">
-          <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" placeholder="Your name" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" placeholder="your@email.com" required>
-          </div>
-          <div class="form-group">
-            <label for="company">Company</label>
-            <input type="text" id="company" name="company" placeholder="Company name (if applicable)">
-          </div>
-          <div class="form-group">
-            <label for="inquiry">Inquiry type</label>
-            <select id="inquiry" name="inquiry">
-              <option value="">Select inquiry type</option>
-              <option value="fractional">Fractional CPO / Advisory / Consulting</option>
-              <option value="fulltime">Senior Full-Time Role</option>
-              <option value="speaking">Speaking / Panel</option>
-              <option value="venture">Venture Conversation</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="message">What's going on?</label>
-            <textarea id="message" name="message" placeholder="Describe the company, stage, and what you're dealing with. Specificity is appreciated." rows="5" required></textarea>
-          </div>
-          <button type="submit" class="btn-p" style="align-self: flex-start;">Send Message</button>
-          <p style="font-family: var(--font-mono); font-size: .7rem; color: var(--text-secondary); letter-spacing: .04em; margin-top: var(--sp2);">
-            [ Form action needs to be connected to a form handler — Netlify Forms, Formspree, or custom endpoint. ]
-          </p>
-        </form>
+      <div class="card" style="border-left: 3px solid var(--color-gulf);">
+        <div class="card-label">Inquiry type 02</div>
+        <h3>Senior Full-Time Roles</h3>
+        <p>VP Product, Head of Product, CPO — if the company, stage, and problem match. Include the company, role scope, and why you think there's a fit. Recruiters: include the client name.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid var(--color-gulf);">
+        <div class="card-label">Inquiry type 03</div>
+        <h3>Speaking &amp; Panels</h3>
+        <p>Product strategy, AI product development, product operating models, and scaling product organizations. Describe the event, audience, and what you're hoping attendees walk away with.</p>
+      </div>
+      <div class="card" style="border-left: 3px solid rgba(196,169,98,.5);">
+        <div class="card-label">Inquiry type 04</div>
+        <h3>Venture Conversations</h3>
+        <p>If you're building something and think there's a reason to explore involvement beyond a standard advisory relationship — equity, co-founder, operating role. Be specific about what you're building and what you need.</p>
       </div>
     </div>
   </div>
