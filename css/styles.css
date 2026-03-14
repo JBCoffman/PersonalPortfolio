@@ -70,13 +70,13 @@ body {
 
 .nav-brand {
   font-family: var(--font-display);
-  font-size: .875rem;
-  font-weight: 600;
+  font-size: 1.275rem;
+  font-weight: 700;
   color: var(--color-oyster);
   text-decoration: none;
   white-space: nowrap;
   margin-right: auto;
-  letter-spacing: .01em;
+  letter-spacing: -.01em;
   transition: color .2s;
 }
 .nav-brand:hover { color: var(--color-seagrass); }
@@ -91,6 +91,7 @@ body {
 .nav-links a {
   font-family: var(--font-mono);
   font-size: .75rem;
+  font-weight: 700;
   color: var(--text-muted-dark);
   text-decoration: none;
   letter-spacing: .08em;
@@ -101,19 +102,19 @@ body {
 .nav-links a:hover,
 .nav-links a.active { color: var(--color-seagrass); }
 
-.nav-cta {
+.nav-links .nav-cta {
   font-family: var(--font-body);
   font-size: .8rem;
-  font-weight: 500;
+  font-weight: 700;
   padding: .5rem 1.25rem;
   background: var(--color-gulf);
-  color: white;
+  color: var(--color-dark);
   text-decoration: none;
   border-radius: 2px;
   white-space: nowrap;
   transition: background .2s;
 }
-.nav-cta:hover { background: var(--color-gulf-light); }
+.nav-links .nav-cta:hover { background: var(--color-gulf-light); }
 
 /* Mobile hamburger */
 .nav-toggle {
@@ -196,7 +197,7 @@ body {
 /* --- HERO -------------------------------------------------- */
 .hero {
   background: var(--color-dark);
-  padding: 8rem var(--sp8) 10rem;
+  padding: 4.8rem var(--sp8) 10rem;
   min-height: 85vh;
   display: flex;
   align-items: center;
