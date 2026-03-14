@@ -738,6 +738,7 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
   letter-spacing: .06em;
   line-height: 1.9;
 }
+.footer-brand p:first-of-type { color: var(--color-seagrass); }
 .footer-links {
   display: flex;
   flex-direction: column;
