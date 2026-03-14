@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fun — Jake Coffman</title>
+  <meta name="description" content="Projects, experiments, and things built for the love of building.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .fun-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--sp6);
+      padding: var(--sp12) 0;
+    }
+    .fun-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--sp4);
+      padding: var(--sp8);
+      border: var(--border-thin);
+      background: var(--color-fog);
+      border-radius: 4px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .2s, background .2s;
+      cursor: pointer;
+    }
+    .fun-card:hover {
+      border-color: var(--color-gulf);
+      background: white;
+    }
+    .fun-icon {
+      font-size: 2.5rem;
+      line-height: 1;
+    }
+    .fun-card-title {
+      font-family: var(--font-display);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -.01em;
+    }
+    .fun-card-desc {
+      font-family: var(--font-body);
+      font-size: .875rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .fun-tag {
+      font-family: var(--font-mono);
+      font-size: .65rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--color-gulf);
+      margin-top: auto;
+    }
+    @media (max-width: 600px) {
+      .fun-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="site-nav">
+  <a href="index.html" class="nav-brand">Jake Coffman</a>
+  <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="work-with-me.html">Work With Me</a></li>
+    <li><a href="selected-work.html">Selected Work</a></li>
+    <li><a href="executive-profile.html">Executive Profile</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="ventures.html">Ventures</a></li>
+    <li><a href="fun.html" class="active">Fun</a></li>
+    <li><a href="contact.html" class="nav-cta">Let's Talk</a></li>
+  </ul>
+</nav>
+
+<!-- GALLERY -->
+<main style="max-width: 1100px; margin: 0 auto; padding: 0 var(--sp8);">
+  <div style="padding-top: var(--sp12);">
+    <div class="sec-label">Fun Stuff</div>
+    <h1 style="font-family: var(--font-display); font-size: clamp(2rem,4vw,3rem); font-weight: 800; letter-spacing: -.02em; color: var(--text-primary); margin-bottom: var(--sp2);">Projects &amp; Experiments</h1>
+    <p style="font-size: 1rem; color: var(--text-secondary); max-width: 50ch;">Things built for the love of building. Games, tools, experiments — no roadmap required.</p>
+  </div>
+
+  <div class="fun-grid">
+
+    <a class="fun-card" href="#">
+      <div class="fun-icon">🎮</div>
+      <div class="fun-card-title">Project Placeholder One</div>
+      <div class="fun-card-desc">One sentence about what this is and why it exists.</div>
+      <div class="fun-tag">Game</div>
+    </a>
+
+    <a class="fun-card" href="#">
+      <div class="fun-icon">🛠️</div>
+      <div class="fun-card-title">Project Placeholder Two</div>
+      <div class="fun-card-desc">One sentence about what this is and why it exists.</div>
+      <div class="fun-tag">Tool</div>
+    </a>
+
+    <a class="fun-card" href="#">
+      <div class="fun-icon">🧪</div>
+      <div class="fun-card-title">Project Placeholder Three</div>
+      <div class="fun-card-desc">One sentence about what this is and why it exists.</div>
+      <div class="fun-tag">Experiment</div>
+    </a>
+
+    <a class="fun-card" href="#">
+      <div class="fun-icon">🎨</div>
+      <div class="fun-card-title">Project Placeholder Four</div>
+      <div class="fun-card-desc">One sentence about what this is and why it exists.</div>
+      <div class="fun-tag">Creative</div>
+    </a>
+
+  </div>
+</main>
+
+<!-- FOOTER -->
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="foot-name">Jake Coffman</span>
+      <p>Fractional CPO · Product Advisor · AI Strategy</p>
+      <p>Tampa Bay, FL &nbsp;·&nbsp; Manatee County</p>
+    </div>
+    <nav class="footer-links">
+      <a href="https://www.linkedin.com/in/jacob-coffman2/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="assets/JakeBCoffmanResume.pdf" target="_blank">Resume (PDF)</a>
+      <a href="contact.html">Contact</a>
+      <a href="ventures.html">Ventures</a>
+    </nav>
+  </div>
+  <div class="footer-bottom">
+    © 2025 Jake Coffman &nbsp;·&nbsp; Tampa Bay, FL
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

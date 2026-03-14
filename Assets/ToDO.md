@@ -4,14 +4,11 @@
 
 ### Homepage
 
-1. #### Update hero tagline to use proper font
-2. top nav banner font needs to be thicker
-3. name in top left needs to have more presence
-4. Lets talk button needs to be easier to see. colors should be higher contrast
-5. Add headshot with digital effect to hero
-6. Add subtle mouse effect that occurs when you move fast, waves or ripples, slow and flowy, but confident. Allow you to control and feel the waves
-7. Do something in the hero banner under the nav whitespace. Maybe rotating "Check this out" or "Skip to the fun"
-8. Add a home nav element for "Fun" and a base page for it. Same header and footer as others but no content. This won't need to follow same layout as other pages. This is more for a gallery of projects/games. I think there should be icons with VERY brief description like two per row and two columns to take up all the space.
+1. Lets talk button needs to be easier to see. colors should be higher contrast
+3. Add headshot with digital effect to hero
+4. Add subtle mouse effect that occurs when you move fast, waves or ripples, slow and flowy, but confident. Allow you to control and feel the waves
+5. Do something in the hero banner under the nav whitespace. Maybe rotating "Check this out" or "Skip to the fun"
+6. Add a home nav element for "Fun" and a base page for it. Same header and footer as others but no content. This won't need to follow same layout as other pages. This is more for a gallery of projects/games. I think there should be icons with VERY brief description like two per row and two columns to take up all the space.
 
 
 ### Contact
