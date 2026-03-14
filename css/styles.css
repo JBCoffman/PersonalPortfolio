@@ -7,7 +7,8 @@
 
 @font-face {
   font-family: 'Excalifont';
-  src: url('https://excalidraw.com/Excalifont.woff2') format('woff2');
+  src: url('fonts/Excalifont.woff2') format('woff2'),
+       url('https://excalidraw.nyc3.cdn.digitaloceanspaces.com/fonts/Excalifont-Regular.woff2') format('woff2');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -27,7 +28,7 @@
   --text-secondary:   #4A5560;
   --text-muted-dark:  #8A8E96;
   --font-display:     'Syne', sans-serif;
-  --font-hero:        'Excalifont', 'Comic Sans MS', cursive;
+  --font-hero:        'Excalifont', 'Caveat', 'Segoe Print', cursive;
   --font-body:        'Instrument Sans', sans-serif;
   --font-mono:        'DM Mono', monospace;
   --border-thin:      1px solid rgba(15,23,32,0.12);
