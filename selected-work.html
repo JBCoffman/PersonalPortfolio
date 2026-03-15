@@ -31,10 +31,11 @@
 <!-- PAGE HERO -->
 <section class="page-hero" style="padding-top: 3.5rem; padding-bottom: 3.5rem;">
   <div class="page-hero-inner">
+    <div class="hero-eyebrow">Startup · Private Equity · Public</div>
     <h1 style="font-family: var(--font-hero); font-size: clamp(3.5rem, 9vw, 7rem); font-weight: normal; line-height: 1; letter-spacing: -.01em; margin: 0; text-align: center;">
       <span style="color: var(--color-oyster);">How</span>
-      <span style="color: var(--color-seagrass);"> I've</span>
-      <span style="color: var(--color-gulf-light);"> helped.</span>
+      <!-- <span style="color: var(--color-seagrass);"> I've</span> -->
+      <span style="color: var(--color-gulf-light);">I've helped</span>
     </h1>
   </div>
 </section>
@@ -330,9 +331,10 @@
       <p>Tampa Bay, FL</p>
     </div>
     <nav class="footer-links">
+      <a href="index.html">Home</a>
+      <a href="contact.html">Contact</a>
       <a href="https://www.linkedin.com/in/jacob-coffman2/" target="_blank" rel="noopener">LinkedIn</a>
       <a href="Assets/JakeBCoffmanResume.pdf" target="_blank">Resume (PDF)</a>
-      <a href="contact.html">Contact</a>
       <!-- <a href="ventures.html">Ventures</a> -->
     </nav>
   </div>
@@ -356,9 +358,9 @@
   gap: 1rem;
   box-shadow: 0 8px 32px rgba(0,0,0,.4);
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity .4s ease, transform .4s ease;
+  transition: opacity .4s ease;
   pointer-events: none;
+  will-change: transform;
 ">
   <div>
     <div style="font-family: var(--font-mono); font-size: .65rem; text-transform: uppercase; letter-spacing: .12em; color: var(--color-gulf); margin-bottom: .35rem;">Want more detail?</div>
@@ -383,21 +385,95 @@
 <script src="js/main.js"></script>
 <script src="js/mouseglow.js"></script>
 <script>
-  (function() {
-    const nudge = document.getElementById('resume-nudge');
-    const trigger = document.querySelector('section:nth-of-type(3)'); // Case study 2
+  (function () {
+    const nudge   = document.getElementById('resume-nudge');
+    const trigger = document.querySelector('section:nth-of-type(3)');
+    const footer  = document.querySelector('.site-footer');
     if (!nudge || !trigger) return;
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          nudge.style.opacity = '1';
-          nudge.style.transform = 'translateY(0)';
-          nudge.style.pointerEvents = 'auto';
-        }
+
+    // ── Constants ─────────────────────────────────────────────────
+    const K           = 0.13;  // spring stiffness
+    const DAMP        = 0.70;  // damping  (< 1 = bouncy)
+    const SENSE       = 0.055; // scroll velocity → displacement
+    const MAX         = 9;     // max bounce px
+    const EPS         = 0.015; // settle threshold
+    const FOOTER_GAP  = 16;    // px clearance above footer
+    // Base bottom matches CSS bottom: 2rem
+    const BASE_BOTTOM = parseFloat(getComputedStyle(document.documentElement).fontSize) * 2;
+
+    let springY     = 0;
+    let springVel   = 0;
+    let curBottom   = BASE_BOTTOM;
+    let lastScrollY = window.scrollY;
+    let looping     = false;
+
+    function tick() {
+      // All reads before writes to avoid forced reflow
+      const sy        = window.scrollY;
+      const viewH     = window.innerHeight;
+      const footerTop = footer ? footer.getBoundingClientRect().top : viewH + 9999;
+
+      // ── Bounce physics ──
+      const delta  = sy - lastScrollY;
+      lastScrollY  = sy;
+      const bTarget = Math.max(-MAX, Math.min(MAX, -delta * SENSE));
+      springVel     = (springVel + (bTarget - springY) * K) * DAMP;
+      springY      += springVel;
+
+      // ── Footer avoidance: lerp curBottom toward needed clearance ──
+      const needed       = viewH - footerTop + FOOTER_GAP;
+      const targetBottom = Math.max(BASE_BOTTOM, needed);
+      curBottom += (targetBottom - curBottom) * 0.12;
+
+      // ── Writes ──
+      nudge.style.bottom = curBottom.toFixed(1) + 'px';
+
+      // ── Settle check ──
+      const springOk = Math.abs(delta) < 0.5
+                    && Math.abs(springY)   < EPS
+                    && Math.abs(springVel) < EPS;
+      const bottomOk = Math.abs(targetBottom - curBottom) < 0.2;
+
+      if (springOk && bottomOk) {
+        springY = 0; springVel = 0;
+        nudge.style.transform = 'none';
+        looping = false;
+        return;
+      }
+
+      const rot = springVel * 0.22;
+      nudge.style.transform =
+        'translateY(' + springY.toFixed(2) + 'px) rotate(' + rot.toFixed(2) + 'deg)';
+
+      requestAnimationFrame(tick);
+    }
+
+    function wake() {
+      if (!looping) {
+        looping = true;
+        lastScrollY = window.scrollY;
+        requestAnimationFrame(tick);
+      }
+    }
+
+    // ── Reveal ────────────────────────────────────────────────────
+    const observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        springY              = 50;
+        springVel            = 0;
+        lastScrollY          = window.scrollY;
+        nudge.style.opacity      = '1';
+        nudge.style.pointerEvents = 'auto';
+        observer.disconnect();
+        window.addEventListener('scroll', wake, { passive: true });
+        wake();
       });
     }, { threshold: 0.1 });
+
     observer.observe(trigger);
   })();
 </script>
+<script src="js/nav-glider.js"></script>
 </body>
 </html>
