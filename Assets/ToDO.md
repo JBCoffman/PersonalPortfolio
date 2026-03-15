@@ -6,17 +6,8 @@
 
 1. Combine Selected work, About, Executive profile
 2. Track record metrics need to be cleaned up
-3. How I help should use same cards from Contact and the two states.
-4. How I help text copy update
-5. Selected outcomes needs logos and interactivity
-6. CTA in selected outcomes says 'Get all the deets.'
-7. WHo I work with needs interactivity
-8. Add stylized headshot to footer near links
-9. Why clients bring me in - update with a quote from me
-10. Pattern cards, reorder the content by flipping 3 and 1.
-11. Other ventures section should be commented out. Also Ventures top nav should be commented out.
-12. Move WHo I work with under Why clients bring me in
-13. Lets find out if there's a fit in excalifont match product glow up styling
+3. Add stylized headshot to footer near links
+4. Ventures top nav should be commented out.
 
 ### Contact
 
@@ -24,3 +15,13 @@
 2. Add a red sharpie drawing that turns me into a viscious cartoon shark overtop of my headshot OR have "bite" chomp when hover/click.
 
 ### Work with me
+
+1. Update hero to use excalifont
+2. update hero subtext to be more accurate
+3. figure out what to call "positioning" and what actually matters in there
+4. Make engagement types more pricing and packaging friendly, good better best step up- demonstrate I can do pricing models.
+5. Problems I solve, turn into a functional magic 8 ball type experience. Click to see a problem I solve materialize.
+6. Ideal client profile needs to be less wordy and easier to parse info. Maybe use same table from index
+7. what working together looks like copy updates
+8. tweak FAQ questions, remove verticals/replace with something that applies to all industries
+9. footer CTA needs to use excalifont
