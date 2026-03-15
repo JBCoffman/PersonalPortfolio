@@ -197,7 +197,7 @@ body {
 /* --- HERO -------------------------------------------------- */
 .hero {
   background: var(--color-dark);
-  padding: 4.8rem var(--sp8) 10rem;
+  padding: 4.8rem var(--sp8) 5rem;
   min-height: 85vh;
   display: flex;
   align-items: center;
