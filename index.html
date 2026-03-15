@@ -309,15 +309,15 @@
 <section class="band-dark">
   <div class="wrap" style="text-align: center;">
     <div class="hero-eyebrow" style="text-align: center;">Available for engagements</div>
-    <h2 style="font-family: var(--font-display); font-size: clamp(2rem,4vw,3.5rem); font-weight: 800; color: var(--color-oyster); letter-spacing: -.02em; margin-bottom: var(--sp6); line-height: 1.1;">
-      Let's find out if there's a fit.
+    <h2 style="font-family: var(--font-hero); font-size: clamp(2rem,4vw,3.5rem); font-weight: normal; color: var(--color-oyster); letter-spacing: 0; margin-bottom: var(--sp6); line-height: 1.1;">
+      Let's talk.
     </h2>
     <p style="font-size: 1.0625rem; color: var(--text-muted-dark); max-width: 46ch; margin: 0 auto var(--sp8); line-height: 1.7;">
-      If you're scaling a product org, navigating M&amp;A, or trying to turn an AI investment into revenue — a 30-minute conversation will tell us both what we need to know.
+      If you're scaling a product org, navigating M&amp;A, or trying to turn an AI investment into revenue — a quick conversation will tell us both what we need to know.
     </p>
     <div class="btn-row" style="justify-content: center;">
       <a href="contact.html" class="btn-p">Book a Conversation</a>
-      <a href="executive-profile.html" class="btn-s">Executive Profile</a>
+      <a href="selected-work.html" class="btn-s">Selected Work</a>
     </div>
   </div>
 </section>
@@ -464,91 +464,6 @@
 
     drawStatic();
   };
-
-  /* MOUSE EFFECT COMMENTED OUT FOR PERFORMANCE TESTING
-  function animate() {
-    rafId = null;
-    ctx.fillStyle = fogString;
-    ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
-
-    if (mouseInCanvas) {
-      const maxV = 30;
-      mouse.vx = Math.max(-maxV, Math.min(maxV, mouse.x - lastMouse.x));
-      mouse.vy = Math.max(-maxV, Math.min(maxV, mouse.y - lastMouse.y));
-      lastMouse.x = mouse.x; lastMouse.y = mouse.y;
-    } else {
-      mouse.vx = 0; mouse.vy = 0;
-    }
-
-    let anyActive = false;
-    for (let i = 0; i < particles.length; i++) {
-      const p = particles[i];
-      if (mouseInCanvas) {
-        const dx = mouse.x - p.x, dy = mouse.y - p.y;
-        const distSq = dx*dx + dy*dy;
-        if (distSq < INTERACTION_RADIUS_SQ) {
-          const influence = 1 - Math.sqrt(distSq) / INTERACTION_RADIUS;
-          p.vx += mouse.vx * influence * WATER_TUG;
-          p.vy += mouse.vy * influence * WATER_TUG;
-        }
-      }
-      p.vx += (p.ox - p.x) * SPRING;
-      p.vy += (p.oy - p.y) * SPRING;
-      p.vx *= FRICTION; p.vy *= FRICTION;
-      p.x += p.vx; p.y += p.vy;
-      if (Math.abs(p.vx) > SETTLE_THRESHOLD || Math.abs(p.vy) > SETTLE_THRESHOLD) anyActive = true;
-    }
-
-    for (let i = 0; i < triangles.length; i++) {
-      const t = triangles[i];
-      const pA = particles[t.a], pB = particles[t.b], pC = particles[t.c];
-      let colorString = t.baseColorString;
-      let doStroke = false;
-      if (mouseInCanvas && !t.isBackground) {
-        const cx = (pA.x+pB.x+pC.x)/3, cy = (pA.y+pB.y+pC.y)/3;
-        const dx = mouse.x - cx, dy = mouse.y - cy;
-        const distSq = dx*dx + dy*dy;
-        if (distSq < INTERACTION_RADIUS_SQ) {
-          const intensity = Math.pow(1 - Math.sqrt(distSq) / INTERACTION_RADIUS, 2);
-          colorString = toRgbString(lerpColor(t.baseColor, intensity > 0.7 ? oysterRGB : seagrassRGB, intensity));
-          doStroke = true;
-        }
-      }
-      ctx.fillStyle = colorString;
-      ctx.beginPath();
-      ctx.moveTo(pA.x, pA.y); ctx.lineTo(pB.x, pB.y); ctx.lineTo(pC.x, pC.y);
-      ctx.closePath(); ctx.fill();
-      if (doStroke) { ctx.strokeStyle = oysterString; ctx.lineWidth = 0.8; ctx.stroke(); }
-    }
-
-    if (mouseInCanvas || anyActive) rafId = requestAnimationFrame(animate);
-  }
-
-  function wakeUp() { if (!rafId) rafId = requestAnimationFrame(animate); }
-
-  function updateMousePos(e) {
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = (canvas.width / dpr) / rect.width;
-    const scaleY = (canvas.height / dpr) / rect.height;
-    mouse.x = (e.clientX - rect.left) * scaleX;
-    mouse.y = (e.clientY - rect.top)  * scaleY;
-  }
-
-  canvas.addEventListener('mouseenter', (e) => {
-    updateMousePos(e); lastMouse.x = mouse.x; lastMouse.y = mouse.y;
-    mouse.vx = 0; mouse.vy = 0; mouseInCanvas = true; wakeUp();
-  });
-  canvas.addEventListener('mousemove', (e) => {
-    if (!mouseInCanvas) { updateMousePos(e); lastMouse.x = mouse.x; lastMouse.y = mouse.y; mouseInCanvas = true; }
-    else updateMousePos(e);
-    wakeUp();
-  });
-  canvas.addEventListener('mouseleave', () => {
-    mouseInCanvas = false;
-    mouse.x = -1000; mouse.y = -1000; lastMouse.x = -1000; lastMouse.y = -1000;
-    mouse.vx = 0; mouse.vy = 0;
-  });
-  END MOUSE EFFECT */
 
   image.crossOrigin = 'anonymous';
   image.src = 'GeometricPortrait/headshot.PNG';
