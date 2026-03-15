@@ -34,7 +34,9 @@
 
     <!-- LEFT: Contact Form -->
     <div>
-      <form class="contact-form" name="contact" method="POST" action="#" data-placeholder="Replace action with your form handler (Netlify, Formspree, etc.)">
+      <form class="contact-form" name="contact" method="POST" netlify data-netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="contact">
+        <p style="display:none;"><label>Don't fill this out: <input name="bot-field"></label></p>
         <div class="form-group">
           <label for="name">Name</label>
           <input type="text" id="name" name="name" placeholder="Your name" required>
@@ -51,8 +53,8 @@
           <label for="inquiry">Inquiry type</label>
           <select id="inquiry" name="inquiry">
             <option value="">Select inquiry type</option>
-            <option value="fractional">Fractional CPO / Advisory / Consulting</option>
             <option value="fulltime">Senior Full-Time Role</option>
+            <option value="fractional">Fractional CPO / Advisory / Consulting</option>
             <option value="speaking">Speaking / Panel</option>
             <option value="venture">Venture Conversation</option>
             <option value="other">Other</option>
@@ -63,9 +65,6 @@
           <textarea id="message" name="message" placeholder="Describe the company, stage, and what you're dealing with. Specificity is appreciated." rows="5" required></textarea>
         </div>
         <button type="submit" class="btn-p" style="align-self: flex-start;">Send Message</button>
-        <p style="font-family: var(--font-mono); font-size: .7rem; color: var(--text-secondary); letter-spacing: .04em; margin-top: var(--sp2);">
-          [ Form action needs to be connected to a form handler — Netlify Forms, Formspree, or custom endpoint. ]
-        </p>
       </form>
     </div>
 
@@ -119,7 +118,7 @@
         <div class="card-label">Email</div>
         <h3>Direct line</h3>
         <p>
-          <a href="mailto:[ jbcoffman@gmail.com ]" style="color: var(--color-gulf); text-decoration: none; font-family: var(--font-mono); font-size: .875rem;">[ jbcoffman@gmail.com ]</a>
+          <a href="mailto:[ hello@jakecoffman.me ]" style="color: var(--color-gulf); text-decoration: none; font-family: var(--font-mono); font-size: .875rem;">[ hello@jakecoffman.me ]</a>
         </p>
         <p style="margin-top: var(--sp3); font-size: .875rem; color: var(--text-secondary);">Typical response within 2 business days</p>
       </div>
