@@ -647,6 +647,23 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
   align-items: center;
   justify-content: center;
   min-height: 140px;
+  position: relative;
+}
+/* Tap/expand affordance indicator */
+.inquiry-card::after {
+  content: '+';
+  position: absolute;
+  top: var(--sp4);
+  right: var(--sp4);
+  font-size: 1.25rem;
+  line-height: 1;
+  color: var(--color-gulf);
+  transition: transform .35s ease, color .35s ease;
+}
+.inquiry-card:hover::after,
+.inquiry-card.is-active::after {
+  transform: rotate(45deg);
+  color: var(--text-secondary);
 }
 .inquiry-card .card-label { color: var(--color-seagrass); transition: color .35s ease; }
 .inquiry-card h2 { color: var(--color-oyster); font-size: clamp(1.5rem, 3vw, 2.25rem); white-space: nowrap; transition: color .35s ease, font-size .35s ease; }
@@ -664,6 +681,14 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
 .inquiry-card.is-active h2 { color: var(--text-primary); font-size: 1.5rem; white-space: normal; }
 .inquiry-card:hover p,
 .inquiry-card.is-active p  { color: var(--text-secondary); opacity: 1; max-height: 200px; margin-top: var(--sp3); }
+
+/* Mobile: collapse staircase, stack full-width */
+@media (max-width: 700px) {
+  .inquiry-card {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+}
 .page-hero h1 {
   font-family: var(--font-display);
   font-size: clamp(2.5rem, 6vw, 5rem);
