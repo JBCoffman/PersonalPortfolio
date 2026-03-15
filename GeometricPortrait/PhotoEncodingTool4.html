@@ -30,7 +30,7 @@
 
         canvas {
             width: 100%;
-            max-width: 800px; 
+            max-width: 800px;
             height: auto;
             cursor: crosshair;
         }
@@ -45,28 +45,28 @@
         const canvas = document.getElementById('portraitCanvas');
         const ctx = canvas.getContext('2d', { alpha: false });
         const image = new Image();
-        
-        // --- Mesh & Detail Settings ---
+
         const EDGE_THRESHOLD = 15;
         const BASE_SPACING = 14;
         const DETAIL_STEP = 4;
-        
-        // --- Fluid & Light Physics ---
-        // FIX 1: Dramatically reduced interaction radius (1/6th original size)
-        const INTERACTION_RADIUS = 20; 
-        const WATER_TUG = 0.4;     
-        const SPRING = 0.03;       
-        const FRICTION = 0.92;     
-        
+        const INTERACTION_RADIUS = 20;
+        const INTERACTION_RADIUS_SQ = INTERACTION_RADIUS * INTERACTION_RADIUS;
+        const WATER_TUG = 0.4;
+        const SPRING = 0.03;
+        const FRICTION = 0.92;
+        const SETTLE_THRESHOLD = 0.01; // velocity below this = settled
+
         let particles = [];
         let triangles = [];
         let mouse = { x: -1000, y: -1000, vx: 0, vy: 0 };
         let lastMouse = { x: -1000, y: -1000 };
-        let mouseInCanvas = false; // FIX 2: Track if mouse is active
+        let mouseInCanvas = false;
+        let isSettled = false;
+        let rafId = null;
         let dpr = window.devicePixelRatio || 1;
-        
+
         let paletteRGB = [];
-        let fogRGB, seagrassRGB, oysterRGB;
+        let fogRGB, fogString, seagrassRGB, oysterRGB, oysterString;
 
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -75,6 +75,10 @@
                 g: parseInt(result[2], 16),
                 b: parseInt(result[3], 16)
             } : { r: 0, g: 0, b: 0 };
+        }
+
+        function toRgbString(c) {
+            return `rgb(${c.r},${c.g},${c.b})`;
         }
 
         function initColors() {
@@ -86,18 +90,19 @@
                 root.getPropertyValue('--color-gulf-light').trim(),
                 root.getPropertyValue('--color-oyster').trim()
             ];
-            
             paletteRGB = hexPalette.map(hexToRgb);
             fogRGB = hexToRgb(root.getPropertyValue('--color-fog').trim());
+            fogString = toRgbString(fogRGB);
             seagrassRGB = hexToRgb(root.getPropertyValue('--color-seagrass').trim());
-            oysterRGB = hexToRgb(root.getPropertyValue('--color-oyster').trim());    
+            oysterRGB = hexToRgb(root.getPropertyValue('--color-oyster').trim());
+            oysterString = toRgbString(oysterRGB);
         }
 
         function lerpColor(c1, c2, factor) {
             return {
-                r: Math.round(c1.r + (c2.r - c1.r) * factor),
-                g: Math.round(c1.g + (c2.g - c1.g) * factor),
-                b: Math.round(c1.b + (c2.b - c1.b) * factor)
+                r: (c1.r + (c2.r - c1.r) * factor) | 0,
+                g: (c1.g + (c2.g - c1.g) * factor) | 0,
+                b: (c1.b + (c2.b - c1.b) * factor) | 0
             };
         }
 
@@ -108,15 +113,15 @@
 
         image.onload = () => {
             initColors();
-            
+
             const scale = Math.min(1, 800 / image.width);
             const w = Math.floor(image.width * scale);
             const h = Math.floor(image.height * scale);
-            
+
             canvas.width = w * dpr;
             canvas.height = h * dpr;
             ctx.scale(dpr, dpr);
-            
+
             const offscreen = document.createElement('canvas');
             offscreen.width = w; offscreen.height = h;
             const oCtx = offscreen.getContext('2d');
@@ -136,9 +141,8 @@
                     const luma = getLuma(imgData, x, y, w);
                     const lRight = getLuma(imgData, x + DETAIL_STEP, y, w);
                     const lBot = getLuma(imgData, x, y + DETAIL_STEP, w);
-                    
                     if (Math.abs(luma - lRight) + Math.abs(luma - lBot) > EDGE_THRESHOLD) {
-                        if (Math.random() > 0.3) points.push([x, y]); 
+                        if (Math.random() > 0.3) points.push([x, y]);
                     }
                 }
             }
@@ -154,19 +158,17 @@
                 const pA = particles[indices[i]];
                 const pB = particles[indices[i+1]];
                 const pC = particles[indices[i+2]];
-                
+
                 const cx = Math.floor((pA.ox + pB.ox + pC.ox) / 3);
                 const cy = Math.floor((pA.oy + pB.oy + pC.oy) / 3);
-                
                 const safeX = Math.max(0, Math.min(cx, w - 1));
                 const safeY = Math.max(0, Math.min(cy, h - 1));
-                
                 const brightness = getLuma(imgData, safeX, safeY, w);
 
                 let baseColorRGB;
                 let isBackground = false;
-                
-                if (brightness > 240) { 
+
+                if (brightness > 240) {
                     baseColorRGB = fogRGB;
                     isBackground = true;
                 } else {
@@ -177,27 +179,48 @@
                 triangles.push({
                     a: indices[i], b: indices[i+1], c: indices[i+2],
                     baseColor: baseColorRGB,
-                    isBackground: isBackground
+                    baseColorString: toRgbString(baseColorRGB), // pre-cached string
+                    isBackground
                 });
             }
 
-            requestAnimationFrame(animate);
+            drawStatic(); // draw once before any interaction
+            rafId = requestAnimationFrame(animate);
         };
 
-        function animate() {
-            ctx.fillStyle = `rgb(${fogRGB.r}, ${fogRGB.g}, ${fogRGB.b})`;
+        // Draw the full scene without physics — used for initial render and settled state
+        function drawStatic() {
+            ctx.fillStyle = fogString;
             ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
-            // FIX 2: Calculate safe velocity with hard limits to prevent lag-explosions
+            for (let i = 0; i < triangles.length; i++) {
+                const t = triangles[i];
+                const pA = particles[t.a];
+                const pB = particles[t.b];
+                const pC = particles[t.c];
+
+                ctx.fillStyle = t.baseColorString;
+                ctx.beginPath();
+                ctx.moveTo(pA.x, pA.y);
+                ctx.lineTo(pB.x, pB.y);
+                ctx.lineTo(pC.x, pC.y);
+                ctx.closePath();
+                ctx.fill();
+            }
+        }
+
+        /* MOUSE EFFECT COMMENTED OUT FOR PERFORMANCE TESTING
+        function animate() {
+            rafId = null;
+
+            ctx.fillStyle = fogString;
+            ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+
+            // Physics — update mouse velocity
             if (mouseInCanvas) {
-                let rawVx = mouse.x - lastMouse.x;
-                let rawVy = mouse.y - lastMouse.y;
-                
-                // Cap max velocity to 30px per frame to prevent extreme tidal waves
                 const maxV = 30;
-                mouse.vx = Math.max(-maxV, Math.min(maxV, rawVx));
-                mouse.vy = Math.max(-maxV, Math.min(maxV, rawVy));
-                
+                mouse.vx = Math.max(-maxV, Math.min(maxV, mouse.x - lastMouse.x));
+                mouse.vy = Math.max(-maxV, Math.min(maxV, mouse.y - lastMouse.y));
                 lastMouse.x = mouse.x;
                 lastMouse.y = mouse.y;
             } else {
@@ -205,17 +228,21 @@
                 mouse.vy = 0;
             }
 
+            let anyActive = false;
+
             for (let i = 0; i < particles.length; i++) {
                 const p = particles[i];
-                
-                const dx = mouse.x - p.x;
-                const dy = mouse.y - p.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
 
-                if (mouseInCanvas && dist < INTERACTION_RADIUS) {
-                    const influence = 1 - (dist / INTERACTION_RADIUS);
-                    p.vx += (mouse.vx * influence * WATER_TUG);
-                    p.vy += (mouse.vy * influence * WATER_TUG);
+                if (mouseInCanvas) {
+                    const dx = mouse.x - p.x;
+                    const dy = mouse.y - p.y;
+                    const distSq = dx * dx + dy * dy;
+
+                    if (distSq < INTERACTION_RADIUS_SQ) {
+                        const influence = 1 - Math.sqrt(distSq) / INTERACTION_RADIUS;
+                        p.vx += mouse.vx * influence * WATER_TUG;
+                        p.vy += mouse.vy * influence * WATER_TUG;
+                    }
                 }
 
                 p.vx += (p.ox - p.x) * SPRING;
@@ -224,55 +251,65 @@
                 p.vy *= FRICTION;
                 p.x += p.vx;
                 p.y += p.vy;
+
+                if (Math.abs(p.vx) > SETTLE_THRESHOLD || Math.abs(p.vy) > SETTLE_THRESHOLD) {
+                    anyActive = true;
+                }
             }
 
+            const mxSq = mouse.x * mouse.x;
             for (let i = 0; i < triangles.length; i++) {
                 const t = triangles[i];
                 const pA = particles[t.a];
                 const pB = particles[t.b];
                 const pC = particles[t.c];
 
-                const currentCx = (pA.x + pB.x + pC.x) / 3;
-                const currentCy = (pA.y + pB.y + pC.y) / 3;
+                let colorString = t.baseColorString;
+                let doStroke = false;
 
-                const dx = mouse.x - currentCx;
-                const dy = mouse.y - currentCy;
-                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (mouseInCanvas && !t.isBackground) {
+                    const cx = (pA.x + pB.x + pC.x) / 3;
+                    const cy = (pA.y + pB.y + pC.y) / 3;
+                    const dx = mouse.x - cx;
+                    const dy = mouse.y - cy;
+                    const distSq = dx * dx + dy * dy;
 
-                let renderColor = t.baseColor;
-
-                if (mouseInCanvas && !t.isBackground && dist < INTERACTION_RADIUS) {
-                    const intensity = Math.pow(1 - (dist / INTERACTION_RADIUS), 2); 
-                    let targetColor = seagrassRGB;
-                    if (intensity > 0.7) targetColor = oysterRGB; 
-                    
-                    renderColor = lerpColor(t.baseColor, targetColor, intensity);
+                    if (distSq < INTERACTION_RADIUS_SQ) {
+                        const intensity = Math.pow(1 - Math.sqrt(distSq) / INTERACTION_RADIUS, 2);
+                        const targetColor = intensity > 0.7 ? oysterRGB : seagrassRGB;
+                        const blended = lerpColor(t.baseColor, targetColor, intensity);
+                        colorString = toRgbString(blended);
+                        doStroke = true;
+                    }
                 }
 
-                const colorString = `rgb(${renderColor.r}, ${renderColor.g}, ${renderColor.b})`;
                 ctx.fillStyle = colorString;
-                
-                if (mouseInCanvas && !t.isBackground && dist < INTERACTION_RADIUS) {
-                    ctx.strokeStyle = `rgb(${oysterRGB.r}, ${oysterRGB.g}, ${oysterRGB.b})`;
-                    ctx.lineWidth = 0.8;
-                } else {
-                    ctx.strokeStyle = colorString; 
-                    ctx.lineWidth = 0.5;
-                }
-
                 ctx.beginPath();
                 ctx.moveTo(pA.x, pA.y);
                 ctx.lineTo(pB.x, pB.y);
                 ctx.lineTo(pC.x, pC.y);
                 ctx.closePath();
                 ctx.fill();
-                ctx.stroke(); 
+
+                if (doStroke) {
+                    ctx.strokeStyle = oysterString;
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
             }
 
-            requestAnimationFrame(animate);
+            if (mouseInCanvas || anyActive) {
+                rafId = requestAnimationFrame(animate);
+            } else {
+                isSettled = true;
+            }
         }
 
-        // --- Standardized Mouse Tracking ---
+        function wakeUp() {
+            isSettled = false;
+            if (!rafId) rafId = requestAnimationFrame(animate);
+        }
+
         function updateMousePos(e) {
             const rect = canvas.getBoundingClientRect();
             const scaleX = (canvas.width / dpr) / rect.width;
@@ -281,7 +318,6 @@
             mouse.y = (e.clientY - rect.top) * scaleY;
         }
 
-        // FIX 2: Intercept entry to prevent the teleportation delta
         canvas.addEventListener('mouseenter', (e) => {
             updateMousePos(e);
             lastMouse.x = mouse.x;
@@ -289,11 +325,11 @@
             mouse.vx = 0;
             mouse.vy = 0;
             mouseInCanvas = true;
+            wakeUp();
         });
 
         canvas.addEventListener('mousemove', (e) => {
             if (!mouseInCanvas) {
-                // Failsafe for fast page loads
                 updateMousePos(e);
                 lastMouse.x = mouse.x;
                 lastMouse.y = mouse.y;
@@ -301,6 +337,7 @@
             } else {
                 updateMousePos(e);
             }
+            wakeUp();
         });
 
         canvas.addEventListener('mouseleave', () => {
@@ -312,8 +349,9 @@
             mouse.vx = 0;
             mouse.vy = 0;
         });
+        END MOUSE EFFECT */
 
-        image.src = 'Headshot.PNG'; 
+        image.src = 'Headshot.PNG';
     </script>
 </body>
 </html>

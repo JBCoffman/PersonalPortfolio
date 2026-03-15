@@ -55,6 +55,7 @@
   </style>
 </head>
 <body>
+<canvas id="glow-canvas"></canvas>
 
 <!-- NAV -->
 <nav class="site-nav">
@@ -327,29 +328,47 @@
   const BASE_SPACING = 14;
   const DETAIL_STEP = 4;
   const INTERACTION_RADIUS = 20;
+  const INTERACTION_RADIUS_SQ = INTERACTION_RADIUS * INTERACTION_RADIUS;
   const WATER_TUG = 0.4;
   const SPRING = 0.03;
   const FRICTION = 0.92;
+  const SETTLE_THRESHOLD = 0.01;
 
   let particles = [], triangles = [];
   let mouse = { x: -1000, y: -1000, vx: 0, vy: 0 };
   let lastMouse = { x: -1000, y: -1000 };
   let mouseInCanvas = false;
+  let rafId = null;
   let dpr = window.devicePixelRatio || 1;
-  let paletteRGB = [], fogRGB, seagrassRGB, oysterRGB;
+  let paletteRGB = [], fogRGB, fogString, seagrassRGB, oysterRGB, oysterString;
 
   function hexToRgb(hex) {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result ? { r: parseInt(result[1],16), g: parseInt(result[2],16), b: parseInt(result[3],16) } : {r:0,g:0,b:0};
   }
 
+  function toRgbString(c) { return `rgb(${c.r},${c.g},${c.b})`; }
+
   function lerpColor(c1, c2, factor) {
-    return { r: Math.round(c1.r+(c2.r-c1.r)*factor), g: Math.round(c1.g+(c2.g-c1.g)*factor), b: Math.round(c1.b+(c2.b-c1.b)*factor) };
+    return { r: (c1.r+(c2.r-c1.r)*factor)|0, g: (c1.g+(c2.g-c1.g)*factor)|0, b: (c1.b+(c2.b-c1.b)*factor)|0 };
   }
 
   function getLuma(data, x, y, width) {
     const i = (y * width + x) * 4;
     return data[i] * 0.299 + data[i+1] * 0.587 + data[i+2] * 0.114;
+  }
+
+  function drawStatic() {
+    ctx.fillStyle = fogString;
+    ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+    for (let i = 0; i < triangles.length; i++) {
+      const t = triangles[i];
+      const pA = particles[t.a], pB = particles[t.b], pC = particles[t.c];
+      ctx.fillStyle = t.baseColorString;
+      ctx.beginPath();
+      ctx.moveTo(pA.x, pA.y); ctx.lineTo(pB.x, pB.y); ctx.lineTo(pC.x, pC.y);
+      ctx.closePath(); ctx.fill();
+    }
   }
 
   image.onload = () => {
@@ -363,8 +382,10 @@
     ];
     paletteRGB  = hexPalette.map(hexToRgb);
     fogRGB      = hexToRgb(root.getPropertyValue('--color-fog').trim());
+    fogString   = toRgbString(fogRGB);
     seagrassRGB = hexToRgb(root.getPropertyValue('--color-seagrass').trim());
     oysterRGB   = hexToRgb(root.getPropertyValue('--color-oyster').trim());
+    oysterString = toRgbString(oysterRGB);
 
     const scale = Math.min(1, 800 / image.width);
     const w = Math.floor(image.width * scale);
@@ -412,14 +433,16 @@
         const idx = Math.min(paletteRGB.length-1, Math.floor((brightness/255)*paletteRGB.length));
         baseColorRGB = paletteRGB[idx];
       }
-      triangles.push({ a: indices[i], b: indices[i+1], c: indices[i+2], baseColor: baseColorRGB, isBackground });
+      triangles.push({ a: indices[i], b: indices[i+1], c: indices[i+2], baseColor: baseColorRGB, baseColorString: toRgbString(baseColorRGB), isBackground });
     }
 
-    requestAnimationFrame(animate);
+    drawStatic();
   };
 
+  /* MOUSE EFFECT COMMENTED OUT FOR PERFORMANCE TESTING
   function animate() {
-    ctx.fillStyle = `rgb(${fogRGB.r},${fogRGB.g},${fogRGB.b})`;
+    rafId = null;
+    ctx.fillStyle = fogString;
     ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
 
     if (mouseInCanvas) {
@@ -431,44 +454,51 @@
       mouse.vx = 0; mouse.vy = 0;
     }
 
+    let anyActive = false;
     for (let i = 0; i < particles.length; i++) {
       const p = particles[i];
-      const dx = mouse.x - p.x, dy = mouse.y - p.y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      if (mouseInCanvas && dist < INTERACTION_RADIUS) {
-        const influence = 1 - (dist / INTERACTION_RADIUS);
-        p.vx += mouse.vx * influence * WATER_TUG;
-        p.vy += mouse.vy * influence * WATER_TUG;
+      if (mouseInCanvas) {
+        const dx = mouse.x - p.x, dy = mouse.y - p.y;
+        const distSq = dx*dx + dy*dy;
+        if (distSq < INTERACTION_RADIUS_SQ) {
+          const influence = 1 - Math.sqrt(distSq) / INTERACTION_RADIUS;
+          p.vx += mouse.vx * influence * WATER_TUG;
+          p.vy += mouse.vy * influence * WATER_TUG;
+        }
       }
       p.vx += (p.ox - p.x) * SPRING;
       p.vy += (p.oy - p.y) * SPRING;
       p.vx *= FRICTION; p.vy *= FRICTION;
       p.x += p.vx; p.y += p.vy;
+      if (Math.abs(p.vx) > SETTLE_THRESHOLD || Math.abs(p.vy) > SETTLE_THRESHOLD) anyActive = true;
     }
 
     for (let i = 0; i < triangles.length; i++) {
       const t = triangles[i];
       const pA = particles[t.a], pB = particles[t.b], pC = particles[t.c];
-      const cx = (pA.x+pB.x+pC.x)/3, cy = (pA.y+pB.y+pC.y)/3;
-      const dx = mouse.x - cx, dy = mouse.y - cy;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      let renderColor = t.baseColor;
-      if (mouseInCanvas && !t.isBackground && dist < INTERACTION_RADIUS) {
-        const intensity = Math.pow(1 - (dist / INTERACTION_RADIUS), 2);
-        renderColor = lerpColor(t.baseColor, intensity > 0.7 ? oysterRGB : seagrassRGB, intensity);
+      let colorString = t.baseColorString;
+      let doStroke = false;
+      if (mouseInCanvas && !t.isBackground) {
+        const cx = (pA.x+pB.x+pC.x)/3, cy = (pA.y+pB.y+pC.y)/3;
+        const dx = mouse.x - cx, dy = mouse.y - cy;
+        const distSq = dx*dx + dy*dy;
+        if (distSq < INTERACTION_RADIUS_SQ) {
+          const intensity = Math.pow(1 - Math.sqrt(distSq) / INTERACTION_RADIUS, 2);
+          colorString = toRgbString(lerpColor(t.baseColor, intensity > 0.7 ? oysterRGB : seagrassRGB, intensity));
+          doStroke = true;
+        }
       }
-      const cs = `rgb(${renderColor.r},${renderColor.g},${renderColor.b})`;
-      ctx.fillStyle = cs;
-      ctx.strokeStyle = (mouseInCanvas && !t.isBackground && dist < INTERACTION_RADIUS)
-        ? `rgb(${oysterRGB.r},${oysterRGB.g},${oysterRGB.b})` : cs;
-      ctx.lineWidth = (mouseInCanvas && !t.isBackground && dist < INTERACTION_RADIUS) ? 0.8 : 0.5;
+      ctx.fillStyle = colorString;
       ctx.beginPath();
       ctx.moveTo(pA.x, pA.y); ctx.lineTo(pB.x, pB.y); ctx.lineTo(pC.x, pC.y);
-      ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.closePath(); ctx.fill();
+      if (doStroke) { ctx.strokeStyle = oysterString; ctx.lineWidth = 0.8; ctx.stroke(); }
     }
 
-    requestAnimationFrame(animate);
+    if (mouseInCanvas || anyActive) rafId = requestAnimationFrame(animate);
   }
+
+  function wakeUp() { if (!rafId) rafId = requestAnimationFrame(animate); }
 
   function updateMousePos(e) {
     const rect = canvas.getBoundingClientRect();
@@ -479,26 +509,26 @@
   }
 
   canvas.addEventListener('mouseenter', (e) => {
-    updateMousePos(e);
-    lastMouse.x = mouse.x; lastMouse.y = mouse.y;
-    mouse.vx = 0; mouse.vy = 0;
-    mouseInCanvas = true;
+    updateMousePos(e); lastMouse.x = mouse.x; lastMouse.y = mouse.y;
+    mouse.vx = 0; mouse.vy = 0; mouseInCanvas = true; wakeUp();
   });
   canvas.addEventListener('mousemove', (e) => {
     if (!mouseInCanvas) { updateMousePos(e); lastMouse.x = mouse.x; lastMouse.y = mouse.y; mouseInCanvas = true; }
     else updateMousePos(e);
+    wakeUp();
   });
   canvas.addEventListener('mouseleave', () => {
     mouseInCanvas = false;
-    mouse.x = -1000; mouse.y = -1000;
-    lastMouse.x = -1000; lastMouse.y = -1000;
+    mouse.x = -1000; mouse.y = -1000; lastMouse.x = -1000; lastMouse.y = -1000;
     mouse.vx = 0; mouse.vy = 0;
   });
+  END MOUSE EFFECT */
 
   image.crossOrigin = 'anonymous';
   image.src = 'GeometricPortrait/headshot.PNG';
 })();
 </script>
 <script src="js/main.js"></script>
+<script src="js/mouseglow.js"></script>
 </body>
 </html>
