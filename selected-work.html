@@ -148,7 +148,7 @@
             <strong style="font-weight: 600;">The work:</strong> Built the product operating model — strategy cadence, governance structure, roadmap accountability, and cross-functional alignment frameworks — that gave leadership and buyers confidence in how the product org operated, not just what it shipped.
           </p>
           <p>
-            <strong style="font-weight: 600;">The outcome:</strong> <a href="https://www.thomabravo.com/portfolio/connectwise" target="_blank" rel="noopener" style="color: var(--color-gulf); text-decoration: none;">Thoma Bravo signed the check </a>for a $1.5B PE acquisition</a>. The product organization was an asset in the process, not a risk to manage. Post-acquisition, incorporated multiple acquisitions and product lines into an operationally aligned platform.
+            <strong style="font-weight: 600;">The outcome:</strong> <a href="https://www.thomabravo.com/portfolio/connectwise" target="_blank" rel="noopener" style="color: var(--color-gulf); text-decoration: none;">Thoma Bravo signed the check</a> for a $1.5B PE acquisition. The product organization was an asset in the process, not a risk to manage. Post-acquisition, incorporated multiple acquisitions and product lines into an operationally aligned platform.
           </p>
         </div>
         <div style="display: flex; flex-direction: column; gap: var(--sp4);">
@@ -326,17 +326,23 @@
 <footer class="site-footer">
   <div class="footer-inner">
     <div class="footer-brand">
+      
       <span class="foot-name">Jake Coffman</span>
       <p>AI Strategy · Product Advisor · Team Builder</p>
       <p>Tampa Bay, FL</p>
     </div>
-    <nav class="footer-links">
-      <a href="index.html">Home</a>
-      <a href="contact.html">Contact</a>
+    <div class="footer-right">
+
+          <div class="footer-headshot-wrap"><img src="GeometricPortrait/headshot.PNG" alt="Jake Coffman" class="footer-headshot"></div>
+
+          <nav class="footer-links">
+     <a href="contact.html">Contact</a>
+      <a href="Assets/JakeBCoffmanResume.pdf" target="_blank">Resume(PDF)</a>
       <a href="https://www.linkedin.com/in/jacob-coffman2/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="Assets/JakeBCoffmanResume.pdf" target="_blank">Resume (PDF)</a>
       <!-- <a href="ventures.html">Ventures</a> -->
     </nav>
+
+        </div>
   </div>
   <div class="footer-bottom">© 2025 Jake Coffman</div>
 </footer>
@@ -362,6 +368,20 @@
   pointer-events: none;
   will-change: transform;
 ">
+  <button id="resume-nudge-close" aria-label="Dismiss" style="
+    position: absolute;
+    top: .6rem;
+    right: .6rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    line-height: 1;
+    color: var(--color-seagrass);
+    opacity: .5;
+    padding: .25rem .4rem;
+    transition: opacity .2s;
+  " onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='.5'">✕</button>
   <div>
     <div style="font-family: var(--font-mono); font-size: .65rem; text-transform: uppercase; letter-spacing: .12em; color: var(--color-gulf); margin-bottom: .35rem;">Want more detail?</div>
     <p style="font-family: var(--font-display); font-size: .9375rem; font-weight: 600; color: var(--color-oyster); line-height: 1.4; margin: 0;">Every case study has a full paper trail.</p>
@@ -472,6 +492,15 @@
     }, { threshold: 0.1 });
 
     observer.observe(trigger);
+
+    // Close button
+    const closeBtn = document.getElementById('resume-nudge-close');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', () => {
+        nudge.style.opacity = '0';
+        nudge.style.pointerEvents = 'none';
+      });
+    }
   })();
 </script>
 <script src="js/nav-glider.js"></script>
