@@ -3,10 +3,10 @@
 // --- Active nav state ---
 (function () {
   const links = document.querySelectorAll('.nav-links a');
-  const current = window.location.pathname.split('/').pop() || 'index.html';
+  const current = (window.location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
   links.forEach(function (a) {
-    const href = a.getAttribute('href');
-    if (href === current || (current === '' && href === 'index.html')) {
+    const href = (a.getAttribute('href') || '').replace(/\.html$/, '');
+    if (href === current || (current === '' && href === 'index')) {
       a.classList.add('active');
     }
   });

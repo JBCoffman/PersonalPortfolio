@@ -2,10 +2,11 @@
   const nav = document.querySelector('.site-nav');
   if (!nav) return;
 
-  // Detect active page by URL
+  // Detect active page by URL — strip .html to handle Netlify pretty URLs
   function getActiveEl() {
-    const page = window.location.pathname.split('/').pop() || 'index.html';
-    return nav.querySelector('.nav-links a[href="' + page + '"]') || null;
+    const page = (window.location.pathname.split('/').pop() || 'index').replace(/\.html$/, '');
+    return nav.querySelector('.nav-links a[href="' + page + '.html"]') ||
+           nav.querySelector('.nav-links a[href="' + page + '"]') || null;
   }
 
   const glider = document.createElement('span');
