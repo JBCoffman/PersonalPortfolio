@@ -29,6 +29,11 @@
   });
 })();
 
+// --- Footer year ---
+document.querySelectorAll('.footer-year').forEach(function (el) {
+  el.textContent = new Date().getFullYear();
+});
+
 // --- FAQ accordion ---
 (function () {
   const items = document.querySelectorAll('.faq-item');
