@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jake Coffman — Skills Matrix</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #090d13;
+  --surface:  #0f1720;
+  --gulf:     #6B8E96;
+  --seagrass: #C4A962;
+  --oyster:   #EDE9E1;
+  --c-ai:     #C4A962;
+  --c-saas:   #6B8E96;
+  --c-data:   #7FBA6A;
+  --c-gtm:    #7B9ED9;
+  --c-ops:    #B0A090;
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Subtle grid */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    linear-gradient(rgba(107,142,150,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(107,142,150,.035) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Center glow */
+#glow {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 600px; height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at center,
+    rgba(107,142,150,.07) 0%,
+    rgba(107,142,150,.02) 40%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Sphere ring */
+#ring {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(107,142,150,.1);
+  pointer-events: none;
+  z-index: 1;
+}
+
+#scene {
+  position: fixed; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  cursor: grab;
+  user-select: none;
+  z-index: 2;
+}
+#scene.dragging { cursor: grabbing; }
+
+#sphere { position: relative; width: 0; height: 0; }
+
+.tag {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  cursor: default;
+  font-weight: 500;
+  letter-spacing: .03em;
+  transition: text-shadow .15s;
+  will-change: transform, opacity, font-size;
+}
+
+/* Header */
+#header {
+  position: fixed;
+  top: 2rem; left: 0; right: 0;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+}
+#header-label {
+  font-family: 'DM Mono', monospace;
+  font-size: .65rem;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gulf);
+  opacity: .7;
+}
+#header-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--oyster);
+  margin-top: .3rem;
+  opacity: .9;
+}
+
+/* Hint */
+#hint {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, calc(-50% + var(--r, 160px) + 2rem));
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--gulf);
+  opacity: .45;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity .6s;
+}
+#hint.gone { opacity: 0; }
+
+/* Legend */
+#legend {
+  position: fixed;
+  bottom: 1.75rem; left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .5rem 1.25rem;
+  padding: 0 1.5rem;
+  pointer-events: none;
+  z-index: 10;
+}
+.leg {
+  display: flex; align-items: center; gap: .35rem;
+  font-family: 'DM Mono', monospace;
+  font-size: .6rem;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  opacity: .55;
+}
+.leg-dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+</style>
+</head>
+<body>
+
+<div id="glow"></div>
+<div id="ring"></div>
+
+<div id="header">
+  <div id="header-label">Skills &amp; Expertise</div>
+  <div id="header-name">Jake Coffman</div>
+</div>
+
+<div id="hint">Drag to explore</div>
+
+<div id="scene">
+  <div id="sphere"></div>
+</div>
+
+<div id="legend">
+  <div class="leg"><div class="leg-dot" style="background:var(--c-ai)"></div><span style="color:var(--c-ai)">AI / ML</span></div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-saas)"></div><span style="color:var(--c-saas)">SaaS &amp; Platform</span></div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-data)"></div><span style="color:var(--c-data)">Data</span></div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-gtm)"></div><span style="color:var(--c-gtm)">Go-to-Market</span></div>
+  <div class="leg"><div class="leg-dot" style="background:var(--c-ops)"></div><span style="color:var(--c-ops)">Operations</span></div>
+</div>
+
+<script>
+// ─── Skills ───────────────────────────────────────────────────────────────
+// weight 3 = critical, 2 = secondary, 1 = supporting
+const SKILLS = [
+  { text: 'LLM Integration',          cat: 'ai',   weight: 3, color: '#C4A962' },
+  { text: 'AI Governance',            cat: 'ai',   weight: 3, color: '#C4A962' },
+  { text: 'Prompt Engineering',       cat: 'ai',   weight: 2, color: '#C4A962' },
+  { text: 'LLM Observability',        cat: 'ai',   weight: 2, color: '#C4A962' },
+  { text: 'Model Risk Mgmt',          cat: 'ai',   weight: 1, color: '#C4A962' },
+  { text: 'Responsible AI',           cat: 'ai',   weight: 1, color: '#C4A962' },
+  { text: 'Multi-Product Portfolio',  cat: 'saas', weight: 3, color: '#6B8E96' },
+  { text: 'API-First Design',         cat: 'saas', weight: 3, color: '#6B8E96' },
+  { text: 'AWS / Azure / GCP',        cat: 'saas', weight: 1, color: '#6B8E96' },
+  { text: '99.9% Uptime Ops',         cat: 'saas', weight: 1, color: '#6B8E96' },
+  { text: 'A/B Testing',              cat: 'data', weight: 3, color: '#7FBA6A' },
+  { text: 'Cohort Analysis',          cat: 'data', weight: 2, color: '#7FBA6A' },
+  { text: 'Pendo',                    cat: 'data', weight: 2, color: '#7FBA6A' },
+  { text: 'Datadog',                  cat: 'data', weight: 1, color: '#7FBA6A' },
+  { text: 'LaunchDarkly',             cat: 'data', weight: 1, color: '#7FBA6A' },
+  { text: 'Langfuse',                 cat: 'data', weight: 1, color: '#7FBA6A' },
+  { text: 'B2B SaaS GTM',             cat: 'gtm',  weight: 3, color: '#7B9ED9' },
+  { text: 'Enterprise Sales Align',   cat: 'gtm',  weight: 3, color: '#7B9ED9' },
+  { text: 'Pricing & Packaging',      cat: 'gtm',  weight: 2, color: '#7B9ED9' },
+  { text: 'PLG',                      cat: 'gtm',  weight: 1, color: '#7B9ED9' },
+  { text: 'OKR / KPI Architecture',   cat: 'ops',  weight: 3, color: '#B0A090' },
+  { text: 'M&A Integration',          cat: 'ops',  weight: 3, color: '#B0A090' },
+  { text: 'Executive Alignment',      cat: 'ops',  weight: 2, color: '#B0A090' },
+  { text: 'Agile',                    cat: 'ops',  weight: 1, color: '#B0A090' },
+];
+
+// ─── Geometry ──────────────────────────────────────────────────────────────
+const vw = window.innerWidth;
+const vh = window.innerHeight;
+const RADIUS = Math.round(Math.min(vw, vh) * 0.33);
+
+// Size ring + hint offset via CSS custom prop
+document.getElementById('ring').style.cssText =
+  `width:${RADIUS*2}px;height:${RADIUS*2}px;`;
+document.getElementById('hint').style.setProperty('--r', RADIUS + 'px');
+document.getElementById('hint').style.transform =
+  `translate(-50%, calc(-50% + ${RADIUS + 28}px))`;
+
+// Fibonacci sphere — evenly distributes N points on a unit sphere
+function fibSphere(n, r) {
+  const phi = Math.PI * (3 - Math.sqrt(5));
+  return Array.from({ length: n }, (_, i) => {
+    const y   = 1 - (i / (n - 1)) * 2;
+    const rad = Math.sqrt(1 - y * y);
+    const t   = phi * i;
+    return { x: Math.cos(t) * rad * r, y: y * r, z: Math.sin(t) * rad * r };
+  });
+}
+
+// ─── Build DOM ─────────────────────────────────────────────────────────────
+const sphere    = document.getElementById('sphere');
+const positions = fibSphere(SKILLS.length, RADIUS);
+
+const FONT_MAX = Math.min(vw * 0.043, 17);
+const FONT_MIN = Math.max(vw * 0.018, 8);
+const BASE = { 3: FONT_MAX, 2: FONT_MAX * 0.78, 1: FONT_MAX * 0.6 };
+
+const tags = SKILLS.map((skill, i) => {
+  const el  = document.createElement('span');
+  el.className = 'tag';
+  el.textContent = skill.text;
+  sphere.appendChild(el);
+
+  const tag = { el, pos: { ...positions[i] }, skill, hot: false };
+
+  el.addEventListener('mouseenter', () => {
+    tag.hot = true;
+    el.style.color      = '#EDE9E1';
+    el.style.textShadow = `0 0 18px ${skill.color}cc, 0 0 36px ${skill.color}55`;
+    el.style.zIndex     = 999;
+  });
+  el.addEventListener('mouseleave', () => {
+    tag.hot = false;
+    el.style.textShadow = '';
+  });
+
+  return tag;
+});
+
+// ─── Rotation state ────────────────────────────────────────────────────────
+let rotX = 0.25, rotY = 0.0;
+let velX = 0,    velY = 0.004;
+let isDragging = false;
+let px = 0, py = 0;
+let interacted = false;
+
+function rotatePoint({ x, y, z }, rx, ry) {
+  // Y-axis rotation
+  const cy = Math.cos(ry), sy = Math.sin(ry);
+  const x1 =  x * cy + z * sy;
+  const z1 = -x * sy + z * cy;
+  // X-axis rotation
+  const cx = Math.cos(rx), sx = Math.sin(rx);
+  const y2 =  y * cx - z1 * sx;
+  const z2 =  y * sx + z1 * cx;
+  return { x: x1, y: y2, z: z2 };
+}
+
+// ─── Render loop ────────────────────────────────────────────────────────────
+function render() {
+  if (!isDragging) {
+    rotY += velY;
+    rotX += velX;
+    velY += (0.004 - velY) * 0.018; // drift back to gentle spin
+    velX += (0     - velX) * 0.018;
+  }
+
+  tags.forEach(tag => {
+    const { el, pos, skill, hot } = tag;
+    const p     = rotatePoint(pos, rotX, rotY);
+    const depth = (p.z + RADIUS) / (2 * RADIUS); // 0=back, 1=front
+
+    const base  = BASE[skill.weight] || FONT_MIN;
+    const size  = Math.max(FONT_MIN * 0.75, base * (0.42 + 0.62 * depth));
+    const alpha = 0.12 + 0.88 * depth;
+
+    el.style.left     = p.x + 'px';
+    el.style.top      = p.y + 'px';
+    el.style.fontSize = size.toFixed(1) + 'px';
+    el.style.opacity  = alpha.toFixed(3);
+    el.style.zIndex   = Math.round(depth * 100);
+
+    if (!hot) {
+      el.style.color = skill.color;
+      // Subtle glow only on the front third
+      el.style.textShadow = depth > 0.68
+        ? `0 0 ${(depth * 10).toFixed(0)}px ${skill.color}55`
+        : '';
+    }
+  });
+
+  requestAnimationFrame(render);
+}
+
+// ─── Input ─────────────────────────────────────────────────────────────────
+const scene = document.getElementById('scene');
+const hint  = document.getElementById('hint');
+
+function onDragStart(x, y) {
+  isDragging = true;
+  px = x; py = y;
+  scene.classList.add('dragging');
+  if (!interacted) { interacted = true; hint.classList.add('gone'); }
+}
+function onDragMove(x, y) {
+  if (!isDragging) return;
+  velY = (x - px) * 0.004;
+  velX = (y - py) * 0.004;
+  rotY += velY;
+  rotX += velX;
+  px = x; py = y;
+}
+function onDragEnd() {
+  isDragging = false;
+  scene.classList.remove('dragging');
+}
+
+scene.addEventListener('mousedown',  e => onDragStart(e.clientX, e.clientY));
+window.addEventListener('mousemove', e => onDragMove(e.clientX, e.clientY));
+window.addEventListener('mouseup',   onDragEnd);
+
+scene.addEventListener('touchstart', e => onDragStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+scene.addEventListener('touchmove',  e => onDragMove(e.touches[0].clientX,  e.touches[0].clientY), { passive: true });
+scene.addEventListener('touchend',   onDragEnd);
+
+render();
+</script>
+</body>
+</html>
