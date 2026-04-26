@@ -34,6 +34,15 @@ document.querySelectorAll('.footer-year').forEach(function (el) {
   el.textContent = new Date().getFullYear();
 });
 
+// --- Mobile resume router ---
+(function () {
+  if (!window.matchMedia('(max-width: 767px)').matches) return;
+  document.querySelectorAll('a[href*="JakeBCoffmanResume.pdf"]').forEach(function (a) {
+    a.href = a.href.replace(/JakeBCoffmanResume\.pdf/, 'jake_coffman_mobile_resume.html');
+    a.removeAttribute('target');
+  });
+})();
+
 // --- FAQ accordion ---
 (function () {
   const items = document.querySelectorAll('.faq-item');

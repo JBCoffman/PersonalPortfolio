@@ -1,0 +1,314 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--serif:'DM Serif Display',serif;--sans:'DM Sans',sans-serif;--ink:#1a1a18;--ink2:#4a4a46;--ink3:#888780;--surface:#faf9f6;--card:#ffffff;--accent:#185FA5;--accent-light:#E6F1FB;--line:rgba(0,0,0,0.08);--green:#3B6D11;--green-light:#EAF3DE;--seagrass:#C4A962}
+body{font-family:var(--sans);background:var(--surface);color:var(--ink);max-width:420px;margin:0 auto;padding:0}
+.hero{padding:2rem 1.25rem 1.5rem;border-bottom:1px solid var(--line);position:relative}
+.hero-mark{position:absolute;top:1.1rem;right:1.1rem;text-align:right}
+.hero-mark-line{font-family:var(--sans);font-size:.58rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--seagrass);line-height:1.65}
+.hero-mark-rule{width:1.4rem;height:1px;background:var(--seagrass);opacity:.55;margin:.35rem 0 0 auto}
+.hero-name{font-family:var(--serif);font-size:2rem;line-height:1.1;letter-spacing:-0.02em;color:var(--ink);margin-bottom:.35rem}
+.hero-title{font-size:.85rem;color:var(--accent);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem}
+.hero-contact{display:flex;flex-wrap:wrap;gap:.4rem .75rem}
+.hero-contact a,.hero-contact span{font-size:.8rem;color:var(--ink2);text-decoration:none}
+.hero-contact a:hover{color:var(--accent)}
+.dot{color:var(--ink3)}
+.summary{padding:1.25rem 1.25rem 0}
+.summary p{font-size:.9rem;line-height:1.65;color:var(--ink2)}
+.highlights{padding:1.25rem}
+.section-label{font-size:.7rem;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:.85rem}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.stat{background:var(--card);border:0.5px solid var(--line);border-radius:12px;padding:.85rem 1rem}
+.stat-num{font-family:var(--serif);font-size:1.6rem;color:var(--ink);line-height:1}
+.stat-num span{font-size:.95rem}
+.stat-desc{font-size:.73rem;color:var(--ink2);margin-top:.3rem;line-height:1.4}
+.stat.accent{background:var(--accent-light);border-color:rgba(24,95,165,.15)}
+.stat.accent .stat-num{color:var(--accent)}
+.stat.green{background:var(--green-light);border-color:rgba(59,109,17,.15)}
+.stat.green .stat-num{color:var(--green)}
+.jobs{padding:0 1.25rem 1.25rem}
+.job{padding:1.1rem 0;border-bottom:0.5px solid var(--line)}
+.job:last-child{border-bottom:none}
+.job-header{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.job-left{flex:1}
+.job-co{font-size:.7rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:.15rem}
+.job-title{font-size:.95rem;font-weight:500;color:var(--ink);line-height:1.3}
+.job-dates{font-size:.72rem;color:var(--ink3);white-space:nowrap;padding-top:.15rem}
+.job-chevron{color:var(--ink3);font-size:.8rem;margin-top:.1rem;transition:transform .2s}
+.job-chevron.open{transform:rotate(180deg)}
+.job-body{overflow:hidden;max-height:0;transition:max-height .3s ease}
+.job-body.open{max-height:800px}
+.job-tag{display:inline-block;font-size:.72rem;background:var(--accent-light);color:var(--accent);padding:.2rem .55rem;border-radius:4px;margin:.6rem 0 .5rem}
+.job-bullets{list-style:none;padding:0}
+.job-bullets li{font-size:.82rem;color:var(--ink2);line-height:1.55;padding:.25rem 0 .25rem .9rem;position:relative}
+.job-bullets li::before{content:'—';position:absolute;left:0;color:var(--ink3)}
+.skills-section{padding:0 1.25rem 1.25rem}
+.skill-group{margin-bottom:.9rem}
+.skill-group-name{font-size:.75rem;font-weight:500;color:var(--ink2);margin-bottom:.4rem}
+.skill-pills{display:flex;flex-wrap:wrap;gap:.35rem}
+.pill{font-size:.72rem;background:var(--card);border:0.5px solid var(--line);border-radius:20px;padding:.22rem .65rem;color:var(--ink2)}
+.edu-section{padding:0 1.25rem 2rem}
+.edu-item{padding:.5rem 0;border-bottom:0.5px solid var(--line)}
+.edu-item:last-child{border-bottom:none}
+.edu-inst{font-size:.85rem;font-weight:500;color:var(--ink)}
+.edu-detail{font-size:.77rem;color:var(--ink2);margin-top:.1rem}
+.certs{margin-top:.75rem;display:flex;flex-wrap:wrap;gap:.35rem}
+.cert{font-size:.7rem;background:var(--green-light);color:var(--green);border-radius:4px;padding:.2rem .55rem}
+.divider{height:1px;background:var(--line);margin:.2rem 1.25rem}
+.pill.key{background:var(--accent-light);color:var(--accent);border-color:rgba(24,95,165,.2);font-weight:500}
+.edu-logo{width:2rem;height:2rem;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:700;letter-spacing:.04em;flex-shrink:0;text-align:center;line-height:1.15;text-transform:uppercase}
+.edu-item{display:flex;align-items:flex-start;gap:.65rem}
+.edu-item-text{flex:1}
+.cert.bbq{background:rgba(196,169,98,.15);color:#7a6010;border:1px solid rgba(196,169,98,.3)}
+.email-pill{background:#C2DCF5;color:var(--accent) !important;border-radius:4px;padding:.1rem .45rem;border:0.5px solid rgba(24,95,165,.35)}
+</style>
+<h2 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)">Jake Coffman — Interactive mobile resume for AI product leader</h2>
+<div class="hero">
+  <div class="hero-mark">
+    <div class="hero-mark-line">Shipping is easy.</div>
+    <div class="hero-mark-line">Scaling is the work.</div>
+    <div class="hero-mark-rule"></div>
+  </div>
+  <div class="hero-name">Jake<br>Coffman</div>
+  <div class="hero-title">AI Product Leader &amp; SaaS Scale Specialist</div>
+  <div class="hero-contact">
+    <a href="tel:8134491922">813-449-1922</a><span class="dot">·</span>
+    <a href="mailto:Hello@JakeCoffman.me" class="email-pill">Hello@JakeCoffman.me</a><span class="dot">·</span>
+    <span>Tampa Bay, FL</span>
+  </div>
+</div>
+
+<div class="summary">
+  <p>AI-native product leader who builds SaaS revenue engines for public market mergers and PE acquisitions. Recently delivered 0→1 Gen AI platforms generating millions in first-year ARR. Expert in scaling high-complexity B2B platforms across the full corporate lifecycle. Elite talent developer. Decent cook.</p>
+</div>
+
+<div class="highlights" style="padding-top:.9rem;padding-bottom:.75rem">
+  <div class="section-label">Career highlights</div>
+  <div class="stat-grid">
+    <div class="stat accent">
+      <div class="stat-num">$14<span>M</span></div>
+      <div class="stat-desc">First-year ARR from IntentMail AI launch</div>
+    </div>
+    <div class="stat accent">
+      <div class="stat-num">95<span>%</span></div>
+      <div class="stat-desc">User retention improvement with AI product</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">$150<span>M</span></div>
+      <div class="stat-desc">ARR platform consolidated from 7 roadmaps</div>
+    </div>
+    <div class="stat green">
+      <div class="stat-num">86<span>%</span></div>
+      <div class="stat-desc">User base growth at ConnectWise (70K→130K)</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">$1.5<span>B+</span></div>
+      <div class="stat-desc">Thoma Bravo PE acquisition steered through</div>
+    </div>
+    <div class="stat green">
+      <div class="stat-num">$4<span>M</span></div>
+      <div class="stat-desc">Revenue next quarter after CRM product launch</div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+<div class="jobs">
+  <div class="section-label" style="padding-top:.4rem">Experience</div>
+
+  <div class="job">
+    <div class="job-header" onclick="toggle(this)">
+      <div class="job-left">
+        <div class="job-co">Exactera · Series B FinTech SaaS</div>
+        <div class="job-title">Senior Product Manager, Emerging Products</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
+        <div class="job-dates">Jan–Nov 2025</div>
+        <div class="job-chevron">▾</div>
+      </div>
+    </div>
+    <div class="job-body">
+      <div class="job-tag">AI Tax &amp; Compliance Automation</div>
+      <ul class="job-bullets">
+        <li>Architected 0→1 strategy for Intelligent Tax Platform and ExactReport — delivered on time and under budget, securing capital infusion from Insight Partners</li>
+        <li>Implemented GenAI quality &amp; cost controls via Langfuse: prompt/version management and LLM evaluation workflows</li>
+        <li>Led A/B experimentation using LaunchDarkly, Datadog, and user feedback for confident decision-making</li>
+        <li>Scaled platform to hundreds of countries with regulatory tax compliance and UI/UX parity</li>
+        <li>Coordinated 48-person distributed product/engineering org across 6 countries; delivered 12 major releases in 11 months</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="job">
+    <div class="job-header" onclick="toggle(this)">
+      <div class="job-left">
+        <div class="job-co">TechTarget · NASDAQ: TTGT</div>
+        <div class="job-title">Senior Product Manager, Data Analytics</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
+        <div class="job-dates">Aug 2022–Jun 2024</div>
+        <div class="job-chevron">▾</div>
+      </div>
+    </div>
+    <div class="job-body">
+      <div class="job-tag">B2B MarTech · 7,500+ Enterprise Customers</div>
+      <ul class="job-bullets">
+        <li>Launched IntentMail AI: 39%→76% MAU retention, 59% customer adoption, $14M first-year ARR — key showcase for Informa Tech acquisition</li>
+        <li>Shipped Account Intent Feed with Salesforce/HubSpot/Workato integration to ~75 enterprise customers, generating $4M revenue in the following quarter</li>
+        <li>Built product health infrastructure from zero: retention, engagement, and segmentation metrics via Pendo</li>
+        <li>Co-founded Gen AI Governance Council and AI Trust Center; created compliance framework for enterprise AI deployment</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="job">
+    <div class="job-header" onclick="toggle(this)">
+      <div class="job-left">
+        <div class="job-co">ConnectWise · Thoma Bravo</div>
+        <div class="job-title">Director of Product</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
+        <div class="job-dates">May 2018–Sep 2021</div>
+        <div class="job-chevron">▾</div>
+      </div>
+    </div>
+    <div class="job-body">
+      <div class="job-tag">$150M ARR MSP Platform</div>
+      <ul class="job-bullets">
+        <li>Product head for $150M ARR MSP portfolio; managed 16-person cross-functional team (3 Lead PMs, PMM, Product Ops, Research, 10 BAs)</li>
+        <li>Steered roadmap/delivery for 80+ person global engineering org</li>
+        <li>Scaled user base 86% (70K→130K) while improving gross dollar retention 91%→94%</li>
+        <li>Founded Product Ops from scratch; automated Jira workflows reducing annual support overhead ~$3M</li>
+        <li>Orchestrated product-side integration of BrightGauge and ITBoost into 5 legacy acquisitions, consolidating 7 roadmaps</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="job">
+    <div class="job-header" onclick="toggle(this)">
+      <div class="job-left">
+        <div class="job-co">ConnectWise</div>
+        <div class="job-title">Director of Support Services</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
+        <div class="job-dates">Jan 2017–May 2018</div>
+        <div class="job-chevron">▾</div>
+      </div>
+    </div>
+    <div class="job-body">
+      <div class="job-tag">Global Operations · 62 Personnel</div>
+      <ul class="job-bullets">
+        <li>Directed 62-person global org (5 managers, 7 team leads); processed 40K MSP tickets/month at 95%+ CSAT</li>
+        <li>Implemented KCS: reduced agent ramp time 66% (9→3 months); support insights fueled product documentation</li>
+        <li>Promoted 25 employees (40% of team) in one year through structured career pathing</li>
+        <li>Built incident management framework capable of handling 100x normal volume</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="job">
+    <div class="job-header" onclick="toggle(this)">
+      <div class="job-left">
+        <div class="job-co">ConnectWise</div>
+        <div class="job-title">Support Services Leadership — Progressive Roles</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.3rem">
+        <div class="job-dates">Aug 2012–Jan 2017</div>
+        <div class="job-chevron">▾</div>
+      </div>
+    </div>
+    <div class="job-body">
+      <div class="job-tag">Startup → Unicorn</div>
+      <ul class="job-bullets">
+        <li>Progressive promotions: Partner Support Consultant → Manager → Senior Manager → Director</li>
+        <li>Built tier-1 through tier-3 support infrastructure scaling the company from startup through unicorn valuation</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+<div class="skills-section" style="padding-top:.75rem">
+  <div class="section-label">Expertise</div>
+  <div class="skill-group">
+    <div class="skill-group-name">AI / ML</div>
+    <div class="skill-pills">
+      <span class="pill key">LLM integration</span><span class="pill">Prompt engineering</span><span class="pill">LLM observability</span><span class="pill key">AI governance</span><span class="pill">Model risk mgmt</span><span class="pill">Responsible AI</span>
+    </div>
+  </div>
+  <div class="skill-group">
+    <div class="skill-group-name">SaaS &amp; Platform</div>
+    <div class="skill-pills">
+      <span class="pill key">Multi-product portfolio</span><span class="pill key">API-first design</span><span class="pill">AWS/Azure/GCP</span><span class="pill">99.9%+ uptime ops</span>
+    </div>
+  </div>
+  <div class="skill-group">
+    <div class="skill-group-name">Data &amp; Experimentation</div>
+    <div class="skill-pills">
+      <span class="pill key">A/B testing</span><span class="pill">Cohort analysis</span><span class="pill key">Pendo</span><span class="pill">Datadog</span><span class="pill">LaunchDarkly</span><span class="pill">Langfuse</span>
+    </div>
+  </div>
+  <div class="skill-group">
+    <div class="skill-group-name">Go-to-Market</div>
+    <div class="skill-pills">
+      <span class="pill key">B2B SaaS GTM</span><span class="pill">PLG</span><span class="pill key">Enterprise sales alignment</span><span class="pill">Pricing &amp; packaging</span>
+    </div>
+  </div>
+  <div class="skill-group">
+    <div class="skill-group-name">Operations</div>
+    <div class="skill-pills">
+      <span class="pill key">OKR/KPI architecture</span><span class="pill">Agile</span><span class="pill key">M&amp;A integration</span><span class="pill">Executive alignment</span>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+<div class="edu-section" style="padding-top:.75rem">
+  <div class="section-label">Education &amp; Credentials</div>
+  <div class="edu-item">
+    <div class="edu-logo" style="background:#006747;color:#CFC493">USF</div>
+    <div class="edu-item-text">
+      <div class="edu-inst">University of South Florida</div>
+      <div class="edu-detail">B.A. Sociology, Minor in Business Administration</div>
+    </div>
+  </div>
+  <div class="edu-item">
+    <div class="edu-logo" style="background:#003262;color:#FDB515">CAL</div>
+    <div class="edu-item-text">
+      <div class="edu-inst">UC Berkeley Executive Education</div>
+      <div class="edu-detail">Product Management Executive Program</div>
+    </div>
+  </div>
+  <div class="edu-item">
+    <div class="edu-logo" style="background:#F26924;color:#ffffff;font-size:.6rem">SVPG</div>
+    <div class="edu-item-text">
+      <div class="edu-inst">SVPG with Christian Idiodi</div>
+      <div class="edu-detail">Inspired/Empowered Workshop</div>
+    </div>
+  </div>
+  <div class="edu-item">
+    <div class="edu-logo" style="background:#e8e6e1;color:#888780;font-size:.65rem">+</div>
+    <div class="edu-item-text">
+      <div class="edu-inst">Other Training</div>
+      <div class="edu-detail">Saint Leo Connected Leadership · Dale Carnegie Leadership for Managers</div>
+    </div>
+  </div>
+  <div class="certs">
+    <span class="cert">CSM / CSPO / ACSPO</span>
+    <span class="cert">Pragmatic Marketing</span>
+    <span class="cert">KCS Certified</span>
+    <span class="cert bbq">Florida BBQ Association Certified Judge</span>
+  </div>
+</div>
+
+<script>
+function toggle(header){
+  const chevron=header.querySelector('.job-chevron');
+  const body=header.nextElementSibling;
+  const isOpen=body.classList.contains('open');
+  document.querySelectorAll('.job-body.open').forEach(b=>b.classList.remove('open'));
+  document.querySelectorAll('.job-chevron.open').forEach(c=>c.classList.remove('open'));
+  if(!isOpen){body.classList.add('open');chevron.classList.add('open');}
+}
+</script>
