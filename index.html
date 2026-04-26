@@ -36,17 +36,21 @@
       align-self: start;
       position: relative;
       z-index: 2;
-      padding-top: 10rem;
-      margin-bottom: -220px;
+      padding-top: 2rem;
+      margin-bottom: -260px;
       pointer-events: none;
+    }
+    .hero-portrait-clip {
+      border-radius: 50% 50% 46% 46% / 42% 42% 56% 56%;
+      overflow: hidden;
     }
     .hero-portrait-wrap canvas {
       width: 100%;
       height: auto;
       display: block;
       pointer-events: all;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 100%);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 18%, black 100%);
+      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 100%);
+      mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 100%);
     }
     @media (max-width: 900px) {
       .hero-body-split { grid-template-columns: 1fr; }
@@ -94,7 +98,9 @@
         <p class="hero-meta">Tampa Bay, FL &nbsp;·&nbsp; Available for engagements &nbsp;·&nbsp; Startup/PE/Public</p>
       </div>
       <div class="hero-portrait-wrap">
-        <canvas id="portraitCanvas"></canvas>
+        <div class="hero-portrait-clip">
+          <canvas id="portraitCanvas"></canvas>
+        </div>
       </div>
     </div>
   </div>
