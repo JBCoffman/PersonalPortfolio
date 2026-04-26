@@ -829,13 +829,15 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
   transition: color .2s;
   line-height: 2.2;
 }
-/* Subtle arc indent: links curve around the circular photo.
-   4-link layout: top steps back, 2nd hugs tightest (circle widest point),
-   3rd steps out as we descend past center, 4th steps back further. */
-.footer-links a:first-child  { padding-right: 40px; }
-.footer-links a:nth-child(2) { padding-right: 0px;  }
-.footer-links a:nth-child(3) { padding-right: 25px; }
-.footer-links a:last-child   { padding-right: 48px; }
+/* Arc indent: 5-link layout curves around the 96px circular photo.
+   Derived from r=48px circle: indent = r − √(r²−y²) at each link's y offset.
+   Links 1+5 sit outside the circle vertically → full-radius indent.
+   Links 2+4 at ±26.4px → ~10px indent. Link 3 at center → 0. */
+.footer-links a:first-child  { padding-right: 46px; }
+.footer-links a:nth-child(2) { padding-right: 10px; }
+.footer-links a:nth-child(3) { padding-right: 0px;  }
+.footer-links a:nth-child(4) { padding-right: 10px; }
+.footer-links a:last-child   { padding-right: 46px; }
 .footer-links a:hover { color: var(--color-seagrass); }
 
 @media (max-width: 600px) {
@@ -844,6 +846,7 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
   .footer-links a:first-child,
   .footer-links a:nth-child(2),
   .footer-links a:nth-child(3),
+  .footer-links a:nth-child(4),
   .footer-links a:last-child { padding-right: 0; }
 }
 .footer-links a:hover { color: var(--color-seagrass); }
