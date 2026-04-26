@@ -52,6 +52,26 @@ body{font-family:var(--sans);background:var(--surface);color:var(--ink);max-widt
 .job-bullets li{font-size:.82rem;color:var(--ink2);line-height:1.55;padding:.25rem 0 .25rem .9rem;position:relative}
 .job-bullets li::before{content:'—';position:absolute;left:0;color:var(--ink3)}
 .skills-embed{padding-top:.75rem}
+.skills-portal{position:relative;margin:0 1.25rem;height:230px;border-radius:12px;overflow:hidden;border:0.5px solid rgba(107,142,150,.2);background:#0f1720;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.sp-tag{position:absolute;font-family:var(--sans);font-weight:500;white-space:nowrap;pointer-events:none;letter-spacing:.03em;animation:sp-float 9s ease-in-out infinite}
+.sp-tag:nth-child(2){animation-duration:11s;animation-delay:-3s}
+.sp-tag:nth-child(3){animation-duration:8s;animation-delay:-6s}
+.sp-tag:nth-child(4){animation-duration:13s;animation-delay:-1s}
+.sp-tag:nth-child(5){animation-duration:10s;animation-delay:-8s}
+.sp-tag:nth-child(6){animation-duration:14s;animation-delay:-4s}
+.sp-tag:nth-child(7){animation-duration:9s;animation-delay:-2s}
+.sp-tag:nth-child(8){animation-duration:12s;animation-delay:-7s}
+.sp-tag:nth-child(9){animation-duration:10s;animation-delay:-5s}
+.sp-tag:nth-child(10){animation-duration:15s;animation-delay:-9s}
+@keyframes sp-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.sp-gradient{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,23,32,1) 0%,rgba(15,23,32,.4) 45%,transparent 100%);pointer-events:none}
+.sp-cta{position:absolute;bottom:0;left:0;right:0;padding:.65rem 1rem .9rem;text-align:center;pointer-events:none}
+.sp-cta-label{font-size:.6rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:rgba(107,142,150,.6);margin-bottom:.35rem}
+.sp-cta-btn{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:500;color:rgba(237,233,225,.75);letter-spacing:.04em;border:0.5px solid rgba(107,142,150,.35);border-radius:20px;padding:.3rem .85rem;background:rgba(107,142,150,.08)}
+.skills-modal{position:fixed;inset:0;z-index:300;background:#090d13;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;flex-direction:column}
+.skills-modal.open{opacity:1;pointer-events:all}
+.skills-modal iframe{flex:1;border:none;width:100%}
+.skills-modal-close{position:absolute;top:1rem;right:1rem;z-index:10;width:2.2rem;height:2.2rem;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:rgba(237,233,225,.8);font-size:.9rem;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--sans)}
 .edu-section{padding:0 1.25rem 2rem}
 .edu-item{padding:.5rem 0;border-bottom:0.5px solid var(--line)}
 .edu-item:last-child{border-bottom:none}
@@ -243,8 +263,28 @@ body{font-family:var(--sans);background:var(--surface);color:var(--ink);max-widt
 <div class="divider"></div>
 <div class="skills-embed">
   <div class="section-label" style="padding:0 1.25rem .5rem">Expertise</div>
-  <iframe src="skills-matrix.html?embed" title="Interactive Skills Matrix" scrolling="no"
-    style="width:100%;height:340px;border:none;display:block;border-radius:0"></iframe>
+  <div class="skills-portal" id="skills-portal">
+    <span class="sp-tag" style="top:14%;left:9%;font-size:15px;color:#C4A962;opacity:.9">LLM Integration</span>
+    <span class="sp-tag" style="top:42%;left:22%;font-size:13px;color:#7B9ED9;opacity:.75">B2B SaaS GTM</span>
+    <span class="sp-tag" style="top:68%;left:6%;font-size:10px;color:#6B8E96;opacity:.45;filter:blur(.6px)">API-First Design</span>
+    <span class="sp-tag" style="top:22%;right:8%;font-size:12px;color:#B0A090;opacity:.7">M&amp;A Integration</span>
+    <span class="sp-tag" style="top:52%;right:12%;font-size:10px;color:#7FBA6A;opacity:.5;filter:blur(.5px)">A/B Testing</span>
+    <span class="sp-tag" style="top:18%;left:48%;font-size:11px;color:#B0A090;opacity:.6">OKR / KPI</span>
+    <span class="sp-tag" style="top:36%;left:4%;font-size:9px;color:#6B8E96;opacity:.3;filter:blur(1px)">Multi-Product</span>
+    <span class="sp-tag" style="top:60%;right:6%;font-size:12px;color:#7FBA6A;opacity:.65">Pendo</span>
+    <span class="sp-tag" style="top:78%;left:38%;font-size:9px;color:#C4A962;opacity:.35;filter:blur(.8px)">Prompt Eng.</span>
+    <span class="sp-tag" style="top:30%;right:30%;font-size:9px;color:#7B9ED9;opacity:.4;filter:blur(.5px)">Enterprise Sales</span>
+    <div class="sp-gradient"></div>
+    <div class="sp-cta">
+      <div class="sp-cta-label">Aspects of Expertise</div>
+      <div class="sp-cta-btn">Tap to explore the full matrix</div>
+    </div>
+  </div>
+</div>
+
+<div class="skills-modal" id="skills-modal">
+  <button class="skills-modal-close" id="skills-modal-close">✕</button>
+  <iframe id="skills-modal-frame" src="" title="Skills Matrix" scrolling="no"></iframe>
 </div>
 
 <div class="divider"></div>
@@ -307,6 +347,23 @@ function toggle(header){
 </div>
 
 <script>
+(function(){
+  const portal = document.getElementById('skills-portal');
+  const modal  = document.getElementById('skills-modal');
+  const frame  = document.getElementById('skills-modal-frame');
+  const close  = document.getElementById('skills-modal-close');
+  portal.addEventListener('click', function(){
+    frame.src = 'skills-matrix.html';
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  });
+  close.addEventListener('click', function(){
+    modal.classList.remove('open');
+    setTimeout(function(){ frame.src = ''; }, 260);
+    document.body.style.overflow = '';
+  });
+})();
+
 (function(){
   const link = document.querySelector('a[href^="tel:"]');
   const overlay = document.getElementById('vm-overlay');
