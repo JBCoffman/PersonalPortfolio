@@ -141,7 +141,6 @@ body::before {
   flex-wrap: wrap;
   gap: .5rem 1.25rem;
   padding: 0 1.5rem;
-  pointer-events: none;
   z-index: 10;
 }
 .leg {
@@ -151,7 +150,19 @@ body::before {
   font-weight: 500;
   letter-spacing: .1em;
   text-transform: uppercase;
-  opacity: .55;
+  opacity: .45;
+  cursor: pointer;
+  padding: .35rem .5rem;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: opacity .2s, border-color .2s;
+  -webkit-tap-highlight-color: transparent;
+}
+.leg:hover { opacity: .75; }
+.leg.active {
+  opacity: 1;
+  border-color: rgba(255,255,255,.1);
+  background: rgba(255,255,255,.04);
 }
 .leg-dot {
   width: 5px; height: 5px;
@@ -177,11 +188,11 @@ body::before {
 </div>
 
 <div id="legend">
-  <div class="leg"><div class="leg-dot" style="background:var(--c-ai)"></div><span style="color:var(--c-ai)">AI / ML</span></div>
-  <div class="leg"><div class="leg-dot" style="background:var(--c-saas)"></div><span style="color:var(--c-saas)">SaaS &amp; Platform</span></div>
-  <div class="leg"><div class="leg-dot" style="background:var(--c-data)"></div><span style="color:var(--c-data)">Data</span></div>
-  <div class="leg"><div class="leg-dot" style="background:var(--c-gtm)"></div><span style="color:var(--c-gtm)">Go-to-Market</span></div>
-  <div class="leg"><div class="leg-dot" style="background:var(--c-ops)"></div><span style="color:var(--c-ops)">Operations</span></div>
+  <div class="leg" data-cat="ai"><div class="leg-dot" style="background:var(--c-ai)"></div><span style="color:var(--c-ai)">AI / ML</span></div>
+  <div class="leg" data-cat="saas"><div class="leg-dot" style="background:var(--c-saas)"></div><span style="color:var(--c-saas)">SaaS &amp; Platform</span></div>
+  <div class="leg" data-cat="data"><div class="leg-dot" style="background:var(--c-data)"></div><span style="color:var(--c-data)">Data</span></div>
+  <div class="leg" data-cat="gtm"><div class="leg-dot" style="background:var(--c-gtm)"></div><span style="color:var(--c-gtm)">Go-to-Market</span></div>
+  <div class="leg" data-cat="ops"><div class="leg-dot" style="background:var(--c-ops)"></div><span style="color:var(--c-ops)">Operations</span></div>
 </div>
 
 <script>
@@ -310,12 +321,26 @@ function render() {
     el.style.opacity  = alpha.toFixed(3);
     el.style.zIndex   = Math.round(depth * 100);
 
-    if (!hot) {
-      el.style.color = skill.color;
-      // Subtle glow only on the front third
-      el.style.textShadow = depth > 0.68
-        ? `0 0 ${(depth * 10).toFixed(0)}px ${skill.color}55`
-        : '';
+    if (activeCategory && skill.cat !== activeCategory) {
+      // dim non-matching tags flat regardless of depth
+      el.style.opacity  = 0.07;
+      el.style.filter   = '';
+      if (!hot) { el.style.color = skill.color; el.style.textShadow = ''; }
+    } else if (activeCategory && skill.cat === activeCategory) {
+      // shine matching tags — boost opacity and glow
+      const boosted = Math.max(0.55, 0.35 + 0.65 * depth);
+      el.style.opacity = boosted.toFixed(3);
+      if (!hot) {
+        el.style.color      = skill.color;
+        el.style.textShadow = `0 0 ${(depth * 18 + 6).toFixed(0)}px ${skill.color}bb, 0 0 32px ${skill.color}44`;
+      }
+    } else {
+      if (!hot) {
+        el.style.color = skill.color;
+        el.style.textShadow = depth > 0.68
+          ? `0 0 ${(depth * 10).toFixed(0)}px ${skill.color}55`
+          : '';
+      }
     }
   });
 
@@ -352,6 +377,18 @@ window.addEventListener('mouseup',   onDragEnd);
 scene.addEventListener('touchstart', e => onDragStart(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
 scene.addEventListener('touchmove',  e => onDragMove(e.touches[0].clientX,  e.touches[0].clientY), { passive: true });
 scene.addEventListener('touchend',   onDragEnd);
+
+// ─── Category filter ────────────────────────────────────────────────────────
+let activeCategory = null;
+const legItems = document.querySelectorAll('.leg');
+
+legItems.forEach(item => {
+  item.addEventListener('click', () => {
+    const cat = item.dataset.cat;
+    activeCategory = activeCategory === cat ? null : cat;
+    legItems.forEach(l => l.classList.toggle('active', l.dataset.cat === activeCategory));
+  });
+});
 
 render();
 </script>
