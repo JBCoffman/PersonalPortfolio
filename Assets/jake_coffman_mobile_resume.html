@@ -17,9 +17,10 @@ body{font-family:var(--sans);background:var(--surface);color:var(--ink);max-widt
 .hero-mark-rule{width:1.4rem;height:1px;background:var(--seagrass);opacity:.55;margin:.35rem 0 0 auto}
 .hero-name{font-family:var(--serif);font-size:2rem;line-height:1.1;letter-spacing:-0.02em;color:var(--ink);margin-bottom:.35rem}
 .hero-title{font-size:.85rem;color:var(--accent);font-weight:500;letter-spacing:.08em;text-transform:uppercase;margin-bottom:.9rem}
-.hero-contact{display:flex;flex-wrap:wrap;gap:.4rem .75rem}
-.hero-contact a,.hero-contact span{font-size:.8rem;color:var(--ink2);text-decoration:none}
+.hero-contact{display:flex;flex-wrap:nowrap;gap:.4rem .45rem;overflow:hidden}
+.hero-contact a,.hero-contact span{font-size:.72rem;color:var(--ink2);text-decoration:none;white-space:nowrap}
 .hero-contact a:hover{color:var(--accent)}
+.voicemail-hint{font-size:.62rem;color:var(--ink3);margin-top:.3rem;letter-spacing:.03em}
 .dot{color:var(--ink3)}
 .summary{padding:1.25rem 1.25rem 0}
 .summary p{font-size:.9rem;line-height:1.65;color:var(--ink2)}
@@ -85,6 +86,7 @@ body{font-family:var(--sans);background:var(--surface);color:var(--ink);max-widt
     <a href="mailto:Hello@JakeCoffman.me" class="email-pill">Hello@JakeCoffman.me</a><span class="dot">·</span>
     <span>Tampa Bay, FL</span>
   </div>
+  <p class="voicemail-hint">voicemail only</p>
 </div>
 
 <div class="summary">
