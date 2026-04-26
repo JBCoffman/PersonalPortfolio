@@ -38,7 +38,7 @@ document.querySelectorAll('.footer-year').forEach(function (el) {
 (function () {
   if (!window.matchMedia('(max-width: 767px)').matches) return;
   document.querySelectorAll('a[href*="JakeBCoffmanResume.pdf"]').forEach(function (a) {
-    a.href = a.href.replace(/JakeBCoffmanResume\.pdf/, 'jake_coffman_mobile_resume.html');
+    a.href = '/resume';
     a.removeAttribute('target');
   });
 })();
