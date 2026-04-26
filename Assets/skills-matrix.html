@@ -202,6 +202,11 @@ body::before {
 </div>
 
 <script>
+// ─── Embed mode ────────────────────────────────────────────────────────────
+if (new URLSearchParams(location.search).has('embed')) {
+  document.getElementById('header').style.display = 'none';
+}
+
 // ─── Skills ───────────────────────────────────────────────────────────────
 // weight 3 = critical, 2 = secondary, 1 = supporting
 const SKILLS = [

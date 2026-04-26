@@ -51,11 +51,7 @@ body{font-family:var(--sans);background:var(--surface);color:var(--ink);max-widt
 .job-bullets{list-style:none;padding:0}
 .job-bullets li{font-size:.82rem;color:var(--ink2);line-height:1.55;padding:.25rem 0 .25rem .9rem;position:relative}
 .job-bullets li::before{content:'—';position:absolute;left:0;color:var(--ink3)}
-.skills-section{padding:0 1.25rem 1.25rem}
-.skill-group{margin-bottom:.9rem}
-.skill-group-name{font-size:.75rem;font-weight:500;color:var(--ink2);margin-bottom:.4rem}
-.skill-pills{display:flex;flex-wrap:wrap;gap:.35rem}
-.pill{font-size:.72rem;background:var(--card);border:0.5px solid var(--line);border-radius:20px;padding:.22rem .65rem;color:var(--ink2)}
+.skills-embed{padding-top:.75rem}
 .edu-section{padding:0 1.25rem 2rem}
 .edu-item{padding:.5rem 0;border-bottom:0.5px solid var(--line)}
 .edu-item:last-child{border-bottom:none}
@@ -64,7 +60,6 @@ body{font-family:var(--sans);background:var(--surface);color:var(--ink);max-widt
 .certs{margin-top:.75rem;display:flex;flex-wrap:wrap;gap:.35rem}
 .cert{font-size:.7rem;background:var(--green-light);color:var(--green);border-radius:4px;padding:.2rem .55rem}
 .divider{height:1px;background:var(--line);margin:.2rem 1.25rem}
-.pill.key{background:var(--accent-light);color:var(--accent);border-color:rgba(24,95,165,.2);font-weight:500}
 .edu-logo{width:2rem;height:2rem;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.5rem;font-weight:700;letter-spacing:.04em;flex-shrink:0;text-align:center;line-height:1.15;text-transform:uppercase}
 .edu-item{display:flex;align-items:flex-start;gap:.65rem}
 .edu-item-text{flex:1}
@@ -246,38 +241,10 @@ body{font-family:var(--sans);background:var(--surface);color:var(--ink);max-widt
 </div>
 
 <div class="divider"></div>
-<div class="skills-section" style="padding-top:.75rem">
-  <div class="section-label">Expertise</div>
-  <div class="skill-group">
-    <div class="skill-group-name">AI / ML</div>
-    <div class="skill-pills">
-      <span class="pill key">LLM integration</span><span class="pill">Prompt engineering</span><span class="pill">LLM observability</span><span class="pill key">AI governance</span><span class="pill">Model risk mgmt</span><span class="pill">Responsible AI</span>
-    </div>
-  </div>
-  <div class="skill-group">
-    <div class="skill-group-name">SaaS &amp; Platform</div>
-    <div class="skill-pills">
-      <span class="pill key">Multi-product portfolio</span><span class="pill key">API-first design</span><span class="pill">AWS/Azure/GCP</span><span class="pill">99.9%+ uptime ops</span>
-    </div>
-  </div>
-  <div class="skill-group">
-    <div class="skill-group-name">Data &amp; Experimentation</div>
-    <div class="skill-pills">
-      <span class="pill key">A/B testing</span><span class="pill">Cohort analysis</span><span class="pill key">Pendo</span><span class="pill">Datadog</span><span class="pill">LaunchDarkly</span><span class="pill">Langfuse</span>
-    </div>
-  </div>
-  <div class="skill-group">
-    <div class="skill-group-name">Go-to-Market</div>
-    <div class="skill-pills">
-      <span class="pill key">B2B SaaS GTM</span><span class="pill">PLG</span><span class="pill key">Enterprise sales alignment</span><span class="pill">Pricing &amp; packaging</span>
-    </div>
-  </div>
-  <div class="skill-group">
-    <div class="skill-group-name">Operations</div>
-    <div class="skill-pills">
-      <span class="pill key">OKR/KPI architecture</span><span class="pill">Agile</span><span class="pill key">M&amp;A integration</span><span class="pill">Executive alignment</span>
-    </div>
-  </div>
+<div class="skills-embed">
+  <div class="section-label" style="padding:0 1.25rem .5rem">Expertise</div>
+  <iframe src="skills-matrix.html?embed" title="Interactive Skills Matrix" scrolling="no"
+    style="width:100%;height:340px;border:none;display:block;border-radius:0"></iframe>
 </div>
 
 <div class="divider"></div>
