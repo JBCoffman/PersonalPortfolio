@@ -35,10 +35,9 @@ body{font-family:var(--sans);background:var(--surface);color:var(--ink);max-widt
 .stat.accent .stat-num{color:var(--accent)}
 .stat.green{background:var(--green-light);border-color:rgba(59,109,17,.15)}
 .stat.green .stat-num{color:var(--green)}
-.jobs{padding:0 1.25rem 1.25rem}
-.job{padding:1.1rem 0;border-bottom:0.5px solid var(--line)}
-.job:last-child{border-bottom:none}
-.job-header{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:8px;margin:0 -.5rem;padding:0 .5rem;transition:background .12s}
+.jobs{padding:0 1.25rem 1.25rem;display:flex;flex-direction:column;gap:.5rem}
+.job{padding:.9rem 1rem;border:0.5px solid var(--line);border-radius:10px;background:var(--card)}
+.job-header{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:6px;transition:background .12s}
 .job-header:active{background:var(--accent-light)}
 .job-left{flex:1}
 .job-co{font-size:.7rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:.15rem}
