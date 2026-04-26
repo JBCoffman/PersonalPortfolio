@@ -49,8 +49,8 @@
       height: auto;
       display: block;
       pointer-events: all;
-      -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 100%);
-      mask-image: linear-gradient(to bottom, transparent 0%, black 12%, black 82%, transparent 100%);
+      -webkit-mask-image: radial-gradient(ellipse 78% 82% at 50% 46%, black 25%, transparent 68%);
+      mask-image: radial-gradient(ellipse 78% 82% at 50% 46%, black 25%, transparent 68%);
     }
     @media (max-width: 900px) {
       .hero-body-split { grid-template-columns: 1fr; }
@@ -314,28 +314,22 @@
 
 <!-- FOOTER -->
 <footer class="site-footer">
-  <div class="footer-inner">
-    <div class="footer-brand">
-      
-      <span class="foot-name">Jake Coffman</span>
-      <p>AI Strategy · Product Advisor · Team Builder</p>
-      <p>Tampa Bay, FL</p>
+  <div class="footer-card">
+    <div class="footer-headshot-wrap">
+      <img src="GeometricPortrait/headshot.png" alt="Jake Coffman" class="footer-headshot">
     </div>
-    <div class="footer-right">
-
-          <div class="footer-headshot-wrap"><img src="GeometricPortrait/headshot.png" alt="Jake Coffman" class="footer-headshot"></div>
-
-          <nav class="footer-links">
-      <a href="contact.html">Contact</a>
-      <a href="Assets/JakeBCoffmanResume.pdf" target="_blank">Resume (PDF)</a>
-      <a href="/resume">Resume (Web)</a>
-      <a href="https://www.linkedin.com/in/jacob-coffman2/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://github.com/JBCoffman" target="_blank" rel="noopener">GitHub</a>
-
-      <!-- <a href="ventures.html">Ventures</a> -->
-    </nav>
-
-        </div>
+    <div class="footer-card-body">
+      <span class="foot-name">Jake Coffman</span>
+      <p class="footer-tagline">AI Strategy · Product Advisor · Team Builder</p>
+      <p class="footer-loc">Tampa Bay, FL</p>
+      <nav class="footer-links">
+        <a href="contact.html">Contact</a>
+        <a href="Assets/JakeBCoffmanResume.pdf" target="_blank">Resume (PDF)</a>
+        <a href="/resume">Resume (Web)</a>
+        <a href="https://www.linkedin.com/in/jacob-coffman2/" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/JBCoffman" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </div>
   </div>
   <div class="footer-bottom">
     © <span class="footer-year">2025</span> Jake Coffman
