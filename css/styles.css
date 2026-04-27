@@ -750,7 +750,7 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
 /* --- FOOTER ----------------------------------------------- */
 .site-footer {
   background: var(--color-dark);
-  padding: var(--sp12) var(--sp8);
+  padding: 0 0 var(--sp8);
   border-top: 1px solid rgba(196,169,98,.15);
 }
 .footer-inner {
@@ -853,7 +853,7 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
 .footer-bottom {
   max-width: 1100px;
   margin: var(--sp8) auto 0;
-  padding-top: var(--sp6);
+  padding: var(--sp6) var(--sp8) 0;
   border-top: 1px solid rgba(255,255,255,.06);
   font-family: var(--font-mono);
   font-size: .7rem;
@@ -865,6 +865,9 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
 .footer-card-outer {
   display: flex;
   justify-content: center;
+  background: var(--color-fog);
+  padding: var(--sp12) var(--sp8);
+  width: 100%;
 }
 .footer-card {
   display: flex;
