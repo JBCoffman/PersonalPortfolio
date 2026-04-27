@@ -863,19 +863,19 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
 
 /* --- FOOTER CARD (index.html centered business-card layout) --- */
 .footer-card {
-  max-width: 460px;
+  max-width: 540px;
   margin: 0 auto;
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.75rem;
   padding: 1.6rem 2rem;
   border: 1px solid rgba(196,169,98,.18);
   border-radius: 12px;
   background: rgba(26,37,53,.4);
 }
 .footer-card .footer-headshot-wrap {
-  width: 72px;
-  height: 72px;
+  width: 96px;
+  height: 96px;
   flex-shrink: 0;
   cursor: default;
   transition: transform .4s cubic-bezier(.34,1.56,.64,1), border-color .3s;
@@ -904,6 +904,7 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
   letter-spacing: .06em;
   line-height: 1.6;
   margin: 0 0 .1rem;
+  white-space: nowrap;
 }
 .footer-loc {
   font-family: var(--font-mono);
@@ -956,12 +957,12 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
   opacity: 1;
   margin-right: 5px;
 }
-/* Per-link identity colors */
-.link-contact:hover  { color:#C4A962; border-color:rgba(196,169,98,.55); background:rgba(196,169,98,.08); }
-.link-pdf:hover      { color:#8FABB2; border-color:rgba(143,171,178,.55); background:rgba(143,171,178,.08); }
-.link-web:hover      { color:#7B9ED9; border-color:rgba(123,158,217,.55); background:rgba(123,158,217,.08); }
-.link-linkedin:hover { color:#5a9fd4; border-color:rgba(90,159,212,.55);  background:rgba(90,159,212,.08); }
-.link-github:hover   { color:#e6edf3; border-color:rgba(230,237,243,.35); background:rgba(230,237,243,.06); }
+/* Per-link identity colors — full saturation fill on hover */
+.link-contact:hover  { color:#1a1208; border-color:#C4A962; background:#C4A962; }
+.link-linkedin:hover { color:#ffffff; border-color:#0A66C2; background:#0A66C2; }
+.link-github:hover   { color:#0d1117; border-color:#e6edf3; background:#e6edf3; }
+.link-pdf:hover      { color:#0d1a1e; border-color:#6B8E96; background:#6B8E96; }
+.link-web:hover      { color:#ffffff; border-color:#4a7ec7; background:#4a7ec7; }
 @media (max-width: 520px) {
   .footer-card { flex-direction: column; text-align: center; gap: 1rem; padding: 1.25rem 1.5rem; }
   .footer-card .footer-links { justify-content: center; }
