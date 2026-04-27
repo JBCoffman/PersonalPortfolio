@@ -877,6 +877,12 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
   width: 72px;
   height: 72px;
   flex-shrink: 0;
+  cursor: default;
+  transition: transform .4s cubic-bezier(.34,1.56,.64,1), border-color .3s;
+}
+.footer-card .footer-headshot-wrap:hover {
+  transform: rotate(-8deg) scale(1.07);
+  border-color: rgba(196,169,98,.95);
 }
 .footer-card-body {
   flex: 1;
@@ -909,20 +915,53 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
 .footer-card .footer-links {
   display: flex;
   flex-wrap: wrap;
-  gap: .15rem .6rem;
-  text-align: left;
+  gap: .4rem;
 }
 .footer-card .footer-links a {
-  display: inline;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
   font-size: .58rem;
-  line-height: 1.9;
-  padding-right: 0;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: rgba(237,233,225,.42);
+  padding: .28rem .75rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: rgba(255,255,255,.03);
+  text-decoration: none;
+  white-space: nowrap;
+  line-height: 1;
+  transition: color .2s, border-color .2s, background .2s, transform .15s;
 }
+.footer-card .footer-links a:hover { transform: translateY(-2px); }
+/* Override global arc padding-right for all 5 chip links */
 .footer-card .footer-links a:first-child,
 .footer-card .footer-links a:nth-child(2),
 .footer-card .footer-links a:nth-child(3),
 .footer-card .footer-links a:nth-child(4),
-.footer-card .footer-links a:last-child { padding-right: 0; }
+.footer-card .footer-links a:last-child { padding-right: .75rem; }
+/* Icon slide-in */
+.chip-icon {
+  display: inline-flex;
+  align-items: center;
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  flex-shrink: 0;
+  transition: max-width .22s ease, opacity .18s ease, margin-right .22s ease;
+}
+.footer-card .footer-links a:hover .chip-icon {
+  max-width: 16px;
+  opacity: 1;
+  margin-right: 5px;
+}
+/* Per-link identity colors */
+.link-contact:hover  { color:#C4A962; border-color:rgba(196,169,98,.55); background:rgba(196,169,98,.08); }
+.link-pdf:hover      { color:#8FABB2; border-color:rgba(143,171,178,.55); background:rgba(143,171,178,.08); }
+.link-web:hover      { color:#7B9ED9; border-color:rgba(123,158,217,.55); background:rgba(123,158,217,.08); }
+.link-linkedin:hover { color:#5a9fd4; border-color:rgba(90,159,212,.55);  background:rgba(90,159,212,.08); }
+.link-github:hover   { color:#e6edf3; border-color:rgba(230,237,243,.35); background:rgba(230,237,243,.06); }
 @media (max-width: 520px) {
   .footer-card { flex-direction: column; text-align: center; gap: 1rem; padding: 1.25rem 1.5rem; }
   .footer-card .footer-links { justify-content: center; }
