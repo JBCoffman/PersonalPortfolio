@@ -404,20 +404,23 @@
     <div style="font-family: var(--font-mono); font-size: .65rem; text-transform: uppercase; letter-spacing: .12em; color: var(--color-gulf); margin-bottom: .35rem;">Want more detail?</div>
     <p style="font-family: var(--font-display); font-size: .9375rem; font-weight: 600; color: var(--color-oyster); line-height: 1.4; margin: 0;">Every case study has a full paper trail.</p>
   </div>
-  <a href="Assets/JakeBCoffmanResume.pdf" target="_blank" style="
-    display: block;
-    text-align: center;
-    background: var(--color-seagrass);
-    color: var(--color-dark);
-    font-family: var(--font-display);
-    font-size: .8125rem;
-    font-weight: 700;
-    letter-spacing: .03em;
-    text-decoration: none;
-    padding: .625rem 1rem;
-    border-radius: 2px;
-    transition: opacity .2s;
-  " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">View Jake's Resume ↗</a>
+  <div style="display:flex;gap:.5rem;">
+    <a href="/Assets/jake_coffman_mobile_resume.html" style="
+      flex:1;text-align:center;
+      background:var(--color-seagrass);color:var(--color-dark);
+      font-family:var(--font-display);font-size:.8rem;font-weight:700;
+      letter-spacing:.03em;text-decoration:none;
+      padding:.6rem .5rem;border-radius:2px;transition:opacity .2s;
+    " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">Web ↗</a>
+    <a href="Assets/JakeBCoffmanResume.pdf" target="_blank" style="
+      flex:1;text-align:center;
+      background:transparent;color:var(--color-seagrass);
+      border:1px solid rgba(196,169,98,.45);
+      font-family:var(--font-display);font-size:.8rem;font-weight:700;
+      letter-spacing:.03em;text-decoration:none;
+      padding:.6rem .5rem;border-radius:2px;transition:opacity .2s;
+    " onmouseover="this.style.opacity='.7'" onmouseout="this.style.opacity='1'">PDF ↓</a>
+  </div>
 </div>
 
 <script src="js/main.js"></script>
