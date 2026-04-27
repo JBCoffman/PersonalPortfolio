@@ -867,25 +867,29 @@ hr.rule { border: none; border-top: var(--border-thin); margin: var(--sp12) 0; }
   display: inline-flex;
   text-align: left;
   align-items: center;
-  gap: 1.25rem;
-  padding: .9rem 1.25rem;
+  width: 560px;
+  max-width: 92vw;
+  min-height: 320px;
+  gap: 1.75rem;
+  padding: 1.5rem 1.75rem;
   border: 1px solid rgba(196,169,98,.18);
-  border-radius: 12px;
+  border-radius: 14px;
   background: rgba(26,37,53,.4);
 }
 .footer-card .footer-headshot-wrap {
-  width: 120px;
-  height: 120px;
+  width: 200px;
+  height: 200px;
   flex-shrink: 0;
   cursor: default;
   transition: transform .4s cubic-bezier(.34,1.56,.64,1), border-color .3s;
 }
 .footer-card .footer-headshot-wrap:hover {
-  transform: rotate(-8deg) scale(1.07);
+  transform: rotate(-8deg) scale(1.05);
   border-color: rgba(196,169,98,.95);
 }
 .footer-card-body {
-  flex: 0 0 auto;
+  flex: 1;
+  min-width: 0;
 }
 .footer-card-body .foot-name {
   font-family: var(--font-display);
