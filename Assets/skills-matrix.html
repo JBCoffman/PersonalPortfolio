@@ -83,7 +83,7 @@ body::before {
   position: absolute;
   transform: translate(-50%, -50%);
   white-space: nowrap;
-  cursor: default;
+  cursor: pointer;
   font-weight: 500;
   letter-spacing: .03em;
   transition: text-shadow .15s;
@@ -295,6 +295,12 @@ const tags = SKILLS.map((skill, i) => {
     tag.hot = false;
     el.style.textShadow = '';
   });
+  el.addEventListener('click', () => {
+    if (dragDist > 6) return; // was a drag, not a tap
+    const cat = skill.cat;
+    activeCategory = activeCategory === cat ? null : cat;
+    legItems.forEach(l => l.classList.toggle('active', l.dataset.cat === activeCategory));
+  });
 
   return tag;
 });
@@ -304,6 +310,8 @@ let rotX = 0.25, rotY = 0.0;
 let velX = 0,    velY = 0.004;
 let isDragging = false;
 let px = 0, py = 0;
+let startX = 0, startY = 0;
+let dragDist = 0;
 let interacted = false;
 
 function rotatePoint({ x, y, z }, rx, ry) {
@@ -375,11 +383,14 @@ const hint  = document.getElementById('hint');
 function onDragStart(x, y) {
   isDragging = true;
   px = x; py = y;
+  startX = x; startY = y;
+  dragDist = 0;
   scene.classList.add('dragging');
   if (!interacted) { interacted = true; hint.classList.add('gone'); }
 }
 function onDragMove(x, y) {
   if (!isDragging) return;
+  dragDist = Math.hypot(x - startX, y - startY);
   velY = (x - px) * 0.004;
   velX = (y - py) * 0.004;
   rotY += velY;
