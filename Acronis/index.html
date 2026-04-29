@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acronis MSP Platform</title>
+  <link rel="stylesheet" href="css/app.css">
+  <style>
+    #auth-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #auth-inner {
+      width: 100%;
+      max-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    #pw-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      outline: none;
+      color: #111827;
+      background: #f9fafb;
+      text-align: center;
+      letter-spacing: .05em;
+    }
+    #pw-input:focus { border-color: #2563eb; background: #fff; box-shadow: 0 0 0 3px #eff6ff; }
+    #pw-input.shake { animation: shake .35s ease; border-color: #dc2626; }
+    #pw-btn {
+      width: 100%;
+      padding: 9px;
+      background: #2563eb;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    #pw-btn:hover { background: #1d4ed8; }
+    #pw-error {
+      font-size: 12px;
+      color: #dc2626;
+      text-align: center;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      display: none;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      20%      { transform: translateX(-6px); }
+      40%      { transform: translateX(6px); }
+      60%      { transform: translateX(-4px); }
+      80%      { transform: translateX(4px); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── AUTH GATE ─────────────────────────────────────────────── -->
+<div id="auth-gate">
+  <div id="auth-inner">
+    <input id="pw-input" type="password" placeholder="Password" autocomplete="current-password">
+    <button id="pw-btn" onclick="checkAuth()">Enter</button>
+    <p id="pw-error">Incorrect password</p>
+  </div>
+</div>
+
+<!-- ── HEADER ──────────────────────────────────────────────── -->
+<header class="app-header">
+  <a class="header-logo" href="#clients">
+    <div class="header-logo-mark">A</div>
+    Acronis MSP
+  </a>
+  <span class="header-badge" style="margin-left:8px;background:var(--accent-bg);border-color:#bfdbfe;color:var(--accent)">Partner Console</span>
+  <div class="header-spacer"></div>
+  <span class="header-badge" title="Active partner org">🏢 TechCo MSP</span>
+  <button class="header-icon-btn" title="Notifications">
+    🔔
+    <span class="notif-dot"></span>
+  </button>
+  <button class="header-icon-btn" title="Settings">⚙️</button>
+  <button class="header-icon-btn" title="Account" style="background:var(--accent);border-color:var(--accent);color:white;font-weight:700;font-size:12px">JC</button>
+</header>
+
+<!-- ── APP BODY ──────────────────────────────────────────────── -->
+<div class="app-body">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">Managed Services</div>
+
+    <button class="nav-item" data-route="clients" onclick="navigate('clients')">
+      <span class="nav-icon">👥</span> Clients
+      <span class="nav-badge">7</span>
+    </button>
+    <button class="nav-item" data-route="automation" onclick="navigate('automation')">
+      <span class="nav-icon">⚡</span> Automation
+    </button>
+    <button class="nav-item" data-route="policies" onclick="navigate('policies')">
+      <span class="nav-icon">📋</span> Policies
+    </button>
+
+    <div class="sidebar-section">Business</div>
+
+    <button class="nav-item" data-route="contracts" onclick="navigate('contracts')">
+      <span class="nav-icon">📝</span> Contracts
+    </button>
+    <button class="nav-item" data-route="billing" onclick="navigate('billing')">
+      <span class="nav-icon">💳</span> Billing
+    </button>
+    <button class="nav-item" data-route="marketing" onclick="navigate('marketing')">
+      <span class="nav-icon">📣</span> Marketing
+    </button>
+    <button class="nav-item" data-route="reports" onclick="navigate('reports')">
+      <span class="nav-icon">📊</span> Reports
+    </button>
+
+    <!-- Expand Acronis stack -->
+    <div class="sidebar-expand">
+      <div class="expand-card">
+        <strong>🚀 Expand Your Stack</strong>
+        Acronis offers 15+ tools across Cybersecurity, Data Protection, and GenAI services for MSPs.
+        <br><br>
+        <a href="#" onclick="return false">Explore Acronis Platform →</a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── CONTENT PANELS ──────────────────────────────────────── -->
+  <main class="content">
+
+    <!-- ═══ CLIENTS LIST ═══ -->
+    <div class="panel" id="panel-clients">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Clients</div>
+          <div class="page-subtitle">4 managed clients &nbsp;·&nbsp; 61 total devices &nbsp;·&nbsp; 7 open issues</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary">Import</button>
+          <button class="btn btn-primary">+ New Client</button>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Client</th>
+                <th>Devices</th>
+                <th>Issues</th>
+                <th>Health</th>
+                <th>Status</th>
+                <th>Contract</th>
+                <th>Since</th>
+              </tr>
+            </thead>
+            <tbody id="clients-tbody">
+              <!-- rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CLIENT DETAIL (dynamic) ═══ -->
+    <div class="panel" id="panel-client-detail">
+      <!-- rendered by JS -->
+    </div>
+
+    <!-- ═══ DEVICE DETAIL (dynamic) ═══ -->
+    <div class="panel" id="panel-device-detail">
+      <!-- rendered by JS -->
+    </div>
+
+    <!-- ═══ AUTOMATION ═══ -->
+    <div class="panel" id="panel-automation">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Automation</div>
+          <div class="page-subtitle">Build, schedule, and manage automated workflows across all clients and devices</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary">Import Flow</button>
+          <button class="btn btn-primary">+ New Automation</button>
+        </div>
+      </div>
+
+      <div class="auto-layout">
+        <!-- Flow list -->
+        <div class="auto-sidebar">
+          <h3>Saved Flows</h3>
+
+          <div class="flow-item">
+            <div style="font-weight:500">Nightly Backup Check</div>
+            <div class="flow-status">Schedule · All clients · Active</div>
+          </div>
+          <div class="flow-item">
+            <div style="font-weight:500">New Device Onboarding</div>
+            <div class="flow-status">Trigger: new device · Active</div>
+          </div>
+          <div class="flow-item">
+            <div style="font-weight:500">Alert → Create Ticket</div>
+            <div class="flow-status">Trigger: alert · Active</div>
+          </div>
+          <div class="flow-item" style="border-style:dashed;color:var(--text-4)">
+            <div>+ New from AI</div>
+          </div>
+
+          <h3 style="margin-top:16px">Action Library</h3>
+          <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">
+            <span class="badge badge-blue">JavaScript</span>
+            <span class="badge badge-blue">HTTP/S</span>
+            <span class="badge badge-blue">API Call</span>
+            <span class="badge badge-blue">DB Query</span>
+            <span class="badge badge-purple">MCP Server</span>
+            <span class="badge badge-purple">AI Agent</span>
+            <span class="badge badge-gray">Markdown</span>
+            <span class="badge badge-gray">CMD</span>
+            <span class="badge badge-gray">PowerShell</span>
+          </div>
+        </div>
+
+        <!-- Canvas -->
+        <div class="auto-canvas">
+          <div class="canvas-grid"></div>
+          <div style="z-index:1;width:100%;max-width:680px;padding:24px">
+            <div style="text-align:center;margin-bottom:16px;font-size:12px;color:var(--text-4)">
+              Editing: <strong style="color:var(--text-2)">Nightly Backup Check</strong>
+            </div>
+
+            <!-- Static n8n-style flow mockup -->
+            <div style="display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:nowrap;overflow-x:auto">
+              <div class="flow-node trigger">
+                <div style="font-size:10px;opacity:.7;margin-bottom:2px">TRIGGER</div>
+                Schedule<br><span style="font-size:10px">Every day 04:00</span>
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-node action">
+                <div style="font-size:10px;opacity:.7;margin-bottom:2px">API CALL</div>
+                Get Clients<br><span style="font-size:10px">Acronis API</span>
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-node action">
+                <div style="font-size:10px;opacity:.7;margin-bottom:2px">LOOP</div>
+                Each Device<br><span style="font-size:10px">forEach</span>
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-node action">
+                <div style="font-size:10px;opacity:.7;margin-bottom:2px">CHECK</div>
+                Backup OK?<br><span style="font-size:10px">IF / ELSE</span>
+              </div>
+              <div class="flow-arrow">→</div>
+              <div class="flow-node output">
+                <div style="font-size:10px;opacity:.7;margin-bottom:2px">OUTPUT</div>
+                Alert + Ticket<br><span style="font-size:10px">on failure</span>
+              </div>
+            </div>
+
+            <div style="text-align:center;margin-top:20px">
+              <button class="btn btn-secondary btn-sm">+ Add Node</button>
+              <button class="btn btn-secondary btn-sm">Test Run</button>
+              <button class="btn btn-primary btn-sm">Save &amp; Activate</button>
+            </div>
+
+            <p style="text-align:center;font-size:11px;color:var(--text-4);margin-top:12px;font-style:italic">
+              [ Full drag-and-drop canvas builder — next sprint. Currently editing via JSON config. ]
+            </p>
+          </div>
+        </div>
+
+        <!-- AI Panel -->
+        <div class="auto-ai-panel">
+          <div class="ai-panel-header">
+            <span>🤖</span> AI Flow Builder
+          </div>
+          <div class="ai-messages">
+            <div class="ai-msg assistant">
+              Hi! Describe what you want to automate and I'll build the initial flow. You can modify from there.
+            </div>
+            <div class="ai-msg user">
+              Alert me if any client's backup hasn't run in 24 hours
+            </div>
+            <div class="ai-msg assistant">
+              Got it. Here's a flow: <strong>Schedule (daily 06:00) → Acronis API: list backups → Filter: last_run &gt; 24h → Notify: email + ticket</strong>. Want me to add auto-remediation (trigger backup) on failure?
+            </div>
+            <div class="ai-msg user">
+              Yes, also log it to the device notes
+            </div>
+            <div class="ai-msg assistant">
+              Added. Flow updated with: Trigger Backup → Wait 30min → Re-check → Log to Device Notes Log. Ready to activate?
+            </div>
+          </div>
+          <div class="ai-input-row">
+            <input type="text" placeholder="Describe an automation…">
+            <button class="btn btn-primary btn-sm">→</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ POLICIES ═══ -->
+    <div class="panel" id="panel-policies">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Policies</div>
+          <div class="page-subtitle">Define rules applied automatically when devices are added or conditions are met</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-primary">+ Create Policy</button>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Policy Name</th>
+                <th>Level</th>
+                <th>Applied To</th>
+                <th>Devices Affected</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-name">Windows Update Baseline</td>
+                <td><span class="badge badge-blue">Client</span></td>
+                <td>All Clients</td>
+                <td>61</td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">Endpoint Backup Required</td>
+                <td><span class="badge badge-purple">Global</span></td>
+                <td>All Devices</td>
+                <td>61</td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">Admin Credential Rotation</td>
+                <td><span class="badge badge-gray">Device</span></td>
+                <td>Servers only</td>
+                <td>8</td>
+                <td><span class="badge badge-yellow">3 Due</span></td>
+                <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">New Client Onboarding</td>
+                <td><span class="badge badge-blue">Client</span></td>
+                <td>Applied on add</td>
+                <td>—</td>
+                <td><span class="badge badge-green">Active</span></td>
+                <td><button class="btn btn-ghost btn-sm">Edit</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">XDR Enrollment</td>
+                <td><span class="badge badge-purple">Global</span></td>
+                <td>All Devices</td>
+                <td>0 / 61</td>
+                <td><span class="badge badge-gray">Inactive</span></td>
+                <td><button class="btn btn-ghost btn-sm">Activate</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="placeholder mt-4" style="max-width:500px">
+          <div class="placeholder-icon">📋</div>
+          <h3>Policy Builder</h3>
+          <p>Define conditions, actions, and scope visually. Policies apply automatically at Device, Group, Client, or Global level.</p>
+          <span class="coming-soon">Visual policy builder — next sprint</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CONTRACTS ═══ -->
+    <div class="panel" id="panel-contracts">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Contracts</div>
+          <div class="page-subtitle">MSA, SOW, and service agreements with AI-assisted creation and e-signature</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary">Templates</button>
+          <button class="btn btn-primary">+ New Contract</button>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="table-wrap mb-4">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Contract</th>
+                <th>Client</th>
+                <th>Type</th>
+                <th>Value / yr</th>
+                <th>Expiry</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="td-name">Managed Care Plus Agreement</td>
+                <td>Riverside Dental Group</td>
+                <td>MSA</td>
+                <td>$28,800</td>
+                <td>Dec 31, 2026</td>
+                <td><span class="badge badge-green">Active / Signed</span></td>
+                <td><button class="btn btn-ghost btn-sm">View PDF</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">Standard RMM Agreement</td>
+                <td>Harbor Legal Group</td>
+                <td>MSA</td>
+                <td>$14,400</td>
+                <td>Mar 15, 2027</td>
+                <td><span class="badge badge-green">Active / Signed</span></td>
+                <td><button class="btn btn-ghost btn-sm">View PDF</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">Managed Care Plus Agreement</td>
+                <td>Metro Auto Group</td>
+                <td>MSA</td>
+                <td>$52,800</td>
+                <td>Sep 30, 2026</td>
+                <td><span class="badge badge-yellow">Renewal Due</span></td>
+                <td><button class="btn btn-ghost btn-sm">Renew</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">Essential Service Agreement</td>
+                <td>Pinnacle CPA</td>
+                <td>MSA</td>
+                <td>$9,600</td>
+                <td>Jun 30, 2027</td>
+                <td><span class="badge badge-green">Active / Signed</span></td>
+                <td><button class="btn btn-ghost btn-sm">View PDF</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">XDR Upgrade SOW — Metro Auto</td>
+                <td>Metro Auto Group</td>
+                <td>SOW</td>
+                <td>$18,000</td>
+                <td>—</td>
+                <td><span class="badge badge-blue">Sent / Awaiting</span></td>
+                <td><button class="btn btn-ghost btn-sm">Resend</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-label">AI Contract Creator</div>
+            <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">Generate a new contract in minutes</h3>
+            <p class="text-sm text-muted mb-3">Answer a few questions and the AI drafts a ready-to-sign MSA or SOW. Edit inline, then send for e-signature.</p>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px"><span style="color:var(--accent)">①</span> Select client and contract type</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-3)"><span>②</span> Define scope and terms via chat</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-3)"><span>③</span> Review AI-drafted PDF</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-3)"><span>④</span> Send for e-signature</div>
+            </div>
+            <button class="btn btn-primary mt-3" style="width:100%">Start AI Wizard</button>
+            <p class="text-xs text-muted mt-2" style="font-style:italic">[ Full wizard flow — coming soon. Step 1 UI available. ]</p>
+          </div>
+          <div class="card">
+            <div class="card-label">E-Signature</div>
+            <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">Integrated signing</h3>
+            <p class="text-sm text-muted mb-3">Send contracts for e-signature directly from the platform. Signers receive a branded email with a one-click signing link.</p>
+            <div style="padding:10px;background:var(--bg-subtle);border-radius:var(--radius);font-size:12px;color:var(--text-3);font-style:italic;margin-bottom:12px">
+              [ DocuSign / Adobe Sign integration — configurable in Settings ]
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px">
+              <span class="text-muted">Awaiting signature</span><span style="font-weight:600">1 contract</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;font-size:13px;margin-top:4px">
+              <span class="text-muted">Signed this year</span><span style="font-weight:600">4 contracts</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ BILLING ═══ -->
+    <div class="panel" id="panel-billing">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Billing</div>
+          <div class="page-subtitle">Multi-modal invoicing, flexible billing models, and payment routing</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary">Export</button>
+          <button class="btn btn-primary">+ Create Invoice</button>
+        </div>
+      </div>
+      <div class="page-body">
+
+        <div class="stat-row mb-4">
+          <div class="card">
+            <div class="card-label">MRR</div>
+            <div class="card-value">$8,800</div>
+            <div class="card-sub">Across 4 clients</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Outstanding</div>
+            <div class="card-value" style="color:var(--yellow)">$3,200</div>
+            <div class="card-sub">2 invoices pending</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Collected (Apr)</div>
+            <div class="card-value" style="color:var(--green)">$5,600</div>
+            <div class="card-sub">Last 30 days</div>
+          </div>
+          <div class="card">
+            <div class="card-label">Overdue</div>
+            <div class="card-value" style="color:var(--red)">$0</div>
+            <div class="card-sub">No overdue invoices</div>
+          </div>
+        </div>
+
+        <div class="table-wrap mb-4">
+          <table class="data-table">
+            <thead><tr><th>Invoice #</th><th>Client</th><th>Period</th><th>Amount</th><th>Billing Model</th><th>Status</th><th></th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="td-name">INV-2026-041</td>
+                <td>Metro Auto Group</td>
+                <td>Apr 2026</td>
+                <td>$4,400</td>
+                <td><span class="badge badge-blue">Managed + Usage</span></td>
+                <td><span class="badge badge-yellow">Sent</span></td>
+                <td><button class="btn btn-ghost btn-sm">View</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">INV-2026-040</td>
+                <td>Riverside Dental</td>
+                <td>Apr 2026</td>
+                <td>$2,400</td>
+                <td><span class="badge badge-gray">Fixed Monthly</span></td>
+                <td><span class="badge badge-yellow">Sent</span></td>
+                <td><button class="btn btn-ghost btn-sm">View</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">INV-2026-039</td>
+                <td>Harbor Legal Group</td>
+                <td>Apr 2026</td>
+                <td>$1,200</td>
+                <td><span class="badge badge-gray">Fixed Monthly</span></td>
+                <td><span class="badge badge-green">Paid</span></td>
+                <td><button class="btn btn-ghost btn-sm">View</button></td>
+              </tr>
+              <tr>
+                <td class="td-name">INV-2026-038</td>
+                <td>Pinnacle CPA</td>
+                <td>Apr 2026</td>
+                <td>$800</td>
+                <td><span class="badge badge-gray">Fixed Monthly</span></td>
+                <td><span class="badge badge-green">Paid</span></td>
+                <td><button class="btn btn-ghost btn-sm">View</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="two-col">
+          <div class="card">
+            <div class="card-label">Multi-Modal Invoice Creator</div>
+            <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">Build invoices your clients want to receive</h3>
+            <p class="text-sm text-muted mb-3">Pull from device history, merge billing models, add line items, and produce invoices that are a delight to receive.</p>
+            <div class="tabs" style="margin:-4px -4px 12px;border-bottom:1px solid var(--border)">
+              <button class="tab-btn active" style="padding:6px 12px;font-size:12px">Fixed Monthly</button>
+              <button class="tab-btn" style="padding:6px 12px;font-size:12px">Usage-Based</button>
+              <button class="tab-btn" style="padding:6px 12px;font-size:12px">Hybrid</button>
+              <button class="tab-btn" style="padding:6px 12px;font-size:12px">Time &amp; Materials</button>
+            </div>
+            <div style="font-size:12px;color:var(--text-3);font-style:italic;background:var(--bg-subtle);padding:8px;border-radius:var(--radius)">
+              [ Invoice line-item builder with device history pull — coming soon. Data model defined. ]
+            </div>
+            <button class="btn btn-primary mt-3 btn-sm">Create Invoice</button>
+          </div>
+          <div class="card">
+            <div class="card-label">Payment Methods</div>
+            <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">Any originator → one output</h3>
+            <p class="text-sm text-muted mb-2">Accept payments from any method your clients use and route to your preferred processor.</p>
+            <div style="display:flex;flex-direction:column;gap:6px;font-size:13px">
+              <div style="display:flex;justify-content:space-between"><span class="text-muted">ACH / Bank Transfer</span><span class="badge badge-green">Connected</span></div>
+              <div style="display:flex;justify-content:space-between"><span class="text-muted">Credit / Debit Card</span><span class="badge badge-green">Connected</span></div>
+              <div style="display:flex;justify-content:space-between"><span class="text-muted">Check / Net-30</span><span class="badge badge-green">Enabled</span></div>
+              <div style="display:flex;justify-content:space-between"><span class="text-muted">Crypto</span><span class="badge badge-gray">Not configured</span></div>
+            </div>
+            <p class="text-xs text-muted mt-3" style="font-style:italic">[ Stripe Connect integration — configurable in Settings ]</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MARKETING ═══ -->
+    <div class="panel" id="panel-marketing">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Marketing</div>
+          <div class="page-subtitle">Connect your audience acquisition and engagement tools</div>
+        </div>
+      </div>
+      <div class="page-body">
+        <div class="two-col mb-4">
+          <div class="card" style="border-top:3px solid var(--accent)">
+            <div class="card-label">Audience Acquisition</div>
+            <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">Bring leads in</h3>
+            <p class="text-sm text-muted mb-3">Connect one source-of-truth for acquiring new MSP clients. Sync contact data, track attribution, and trigger onboarding automations.</p>
+            <div style="background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px">
+              <div style="font-size:12px;color:var(--text-3);margin-bottom:8px">Suggested integrations:</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <span class="badge badge-gray">HubSpot</span>
+                <span class="badge badge-gray">LinkedIn Ads</span>
+                <span class="badge badge-gray">Google Ads</span>
+                <span class="badge badge-gray">Custom Webhook</span>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%">+ Connect Integration</button>
+            <p class="text-xs text-muted mt-2" style="font-style:italic">[ One active integration per slot — by design. Keeps data clean. ]</p>
+          </div>
+
+          <div class="card" style="border-top:3px solid var(--purple)">
+            <div class="card-label">Audience Engagement</div>
+            <h3 style="font-size:14px;font-weight:600;margin-bottom:8px">Stay in front of clients</h3>
+            <p class="text-sm text-muted mb-3">One integration to communicate with your audience — newsletters, onboarding sequences, renewal reminders, upsell campaigns.</p>
+            <div style="background:var(--bg-subtle);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:12px">
+              <div style="font-size:12px;color:var(--text-3);margin-bottom:8px">Suggested integrations:</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <span class="badge badge-gray">Mailchimp</span>
+                <span class="badge badge-gray">ActiveCampaign</span>
+                <span class="badge badge-gray">Customer.io</span>
+                <span class="badge badge-gray">Custom SMTP</span>
+              </div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;background:var(--purple);border-color:var(--purple)">+ Connect Integration</button>
+            <p class="text-xs text-muted mt-2" style="font-style:italic">[ Trigger campaigns from device events, contract renewals, billing events. ]</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Partner Growth Playbook</div>
+          <h3 style="font-size:14px;font-weight:600;margin-bottom:12px">With Acronis, you can sell AI</h3>
+          <div class="three-col">
+            <div style="padding:12px;background:var(--bg-subtle);border-radius:var(--radius);font-size:13px">
+              <div style="font-weight:600;margin-bottom:6px">🛡️ Sell Cybersecurity</div>
+              <p class="text-muted text-sm">Position XDR/EDR/MDR to clients already in your RMM. One click from device view to upgrade proposal.</p>
+            </div>
+            <div style="padding:12px;background:var(--bg-subtle);border-radius:var(--radius);font-size:13px">
+              <div style="font-weight:600;margin-bottom:6px">🤖 Sell GenAI Protection</div>
+              <p class="text-muted text-sm">New Acronis GenAI Protection product. Let clients say "I have AI security" — you enable it, you bill for it.</p>
+            </div>
+            <div style="padding:12px;background:var(--bg-subtle);border-radius:var(--radius);font-size:13px">
+              <div style="font-weight:600;margin-bottom:6px">☁️ Sell Backup as a Service</div>
+              <p class="text-muted text-sm">Every device managed here is a backup upsell opportunity. Usage-based billing makes it easy to package and margin.</p>
+            </div>
+          </div>
+          <p class="text-xs text-muted mt-3" style="font-style:italic">[ Campaign templates for each growth motion — coming soon ]</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ REPORTS ═══ -->
+    <div class="panel" id="panel-reports">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Reports</div>
+          <div class="page-subtitle">AI-powered reporting, on-demand visualizations, and shareable live dashboards</div>
+        </div>
+        <div class="page-actions">
+          <button class="btn btn-secondary">Saved Reports</button>
+          <button class="btn btn-primary">+ New Report</button>
+        </div>
+      </div>
+
+      <!-- AI Chat bar -->
+      <div style="padding:12px 24px;border-bottom:1px solid var(--border);background:var(--bg-subtle);display:flex;gap:8px;align-items:center">
+        <span style="font-size:14px">🤖</span>
+        <input type="text" class="form-input" style="max-width:560px" placeholder="Ask anything: "Show backup failures this week" · "Which clients have critical alerts?" · "Compare MRR by client"">
+        <button class="btn btn-primary">Ask</button>
+        <span class="text-xs text-muted" style="margin-left:4px">Supports natural language + SQL</span>
+      </div>
+
+      <div class="reports-layout">
+        <div class="reports-main">
+
+          <!-- Saved reports grid -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:20px">
+            <div class="card">
+              <div class="card-label">Monthly</div>
+              <div style="font-weight:600;font-size:14px;margin-bottom:4px">Client Health Summary</div>
+              <p class="text-sm text-muted mb-3">Overall health, open issues, SLA performance by client. Includes backup status and patch compliance.</p>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="btn btn-secondary btn-sm">Preview</button>
+                <button class="btn btn-ghost btn-sm">Share</button>
+                <button class="btn btn-ghost btn-sm">Publish URL</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-label">Weekly</div>
+              <div style="font-weight:600;font-size:14px;margin-bottom:4px">Patch Compliance</div>
+              <p class="text-sm text-muted mb-3">Pending, applied, and failed patches across all clients. Breakdown by severity and device type.</p>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="btn btn-secondary btn-sm">Preview</button>
+                <button class="btn btn-ghost btn-sm">Share</button>
+                <button class="btn btn-ghost btn-sm">Publish URL</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-label">On Demand</div>
+              <div style="font-weight:600;font-size:14px;margin-bottom:4px">Backup Status</div>
+              <p class="text-sm text-muted mb-3">All protected devices, last backup time, recovery points available, storage usage by client.</p>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="btn btn-secondary btn-sm">Preview</button>
+                <button class="btn btn-ghost btn-sm">Share</button>
+                <button class="btn btn-ghost btn-sm">Publish URL</button>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-label">Executive</div>
+              <div style="font-weight:600;font-size:14px;margin-bottom:4px">Executive Summary</div>
+              <p class="text-sm text-muted mb-3">High-level view for client stakeholders. Health score, key actions, upcoming renewals, value delivered.</p>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <button class="btn btn-secondary btn-sm">Preview</button>
+                <button class="btn btn-ghost btn-sm">Share</button>
+                <button class="btn btn-ghost btn-sm">Publish URL</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Response area -->
+          <div class="card">
+            <div class="card-label" style="margin-bottom:8px">AI Response — Last Query</div>
+            <div style="font-size:13px;color:var(--text-2);background:var(--bg-subtle);padding:10px 14px;border-radius:var(--radius);margin-bottom:12px;font-style:italic">
+              "Show backup failures this week across all clients"
+            </div>
+            <p style="font-size:13px;color:var(--text-2);margin-bottom:12px">
+              Found <strong>2 backup failures</strong> this week:<br>
+              <br>
+              • <button class="btn btn-ghost btn-sm" onclick="navigate('device/106');return false" style="padding:2px 4px">WIN-BILLING-01</button> (Riverside Dental) — Backup failed Apr 27 at 04:00 AM. <em>Disk 91% full — insufficient space for snapshot.</em><br>
+              • <button class="btn btn-ghost btn-sm" onclick="navigate('device/303');return false" style="padding:2px 4px">WIN-SERVICE-01</button> (Metro Auto) — Backup agent unreachable Apr 26. Device was offline at scheduled time.
+            </p>
+            <p class="text-xs text-muted" style="font-style:italic">[ Clickable data references open the relevant device view. Chart visualization below. Full SQL query accessible via "View Query" → ]</p>
+          </div>
+        </div>
+
+        <!-- Preview panel -->
+        <div class="reports-preview">
+          <div class="preview-header">
+            Preview — Client Health Summary (Apr 2026)
+          </div>
+          <div class="chart-placeholder">
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-4);margin-bottom:12px">Health Score by Client</div>
+            <div class="mock-chart">
+              <div class="chart-bar" style="height:91%;background:var(--yellow)"></div>
+              <div class="chart-bar" style="height:99%"></div>
+              <div class="chart-bar" style="height:74%;background:var(--red)"></div>
+              <div class="chart-bar" style="height:100%"></div>
+            </div>
+            <div class="chart-labels">
+              <span>RDG</span><span>HLG</span><span>MAG</span><span>PCPA</span>
+            </div>
+
+            <hr class="divider" style="width:100%;margin:16px 0">
+
+            <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-4);margin-bottom:12px">Open Issues by Client</div>
+            <div class="mock-chart" style="height:60px">
+              <div class="chart-bar" style="height:40%;background:var(--yellow)"></div>
+              <div class="chart-bar" style="height:0%;background:var(--border)"></div>
+              <div class="chart-bar" style="height:100%;background:var(--red)"></div>
+              <div class="chart-bar" style="height:0%;background:var(--border)"></div>
+            </div>
+            <div class="chart-labels">
+              <span>RDG</span><span>HLG</span><span>MAG</span><span>PCPA</span>
+            </div>
+
+            <p class="text-xs text-muted mt-3" style="font-style:italic;text-align:center">[ Real-time chart with drill-down — full release ]</p>
+
+            <div style="display:flex;gap:6px;margin-top:16px">
+              <button class="btn btn-secondary btn-sm">Export PDF</button>
+              <button class="btn btn-secondary btn-sm">Share Link</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ── AUTH LOGIC ──────────────────────────────────────────────── -->
+<script>
+  // Check session immediately — no flash if already authenticated
+  if (sessionStorage.getItem('acronis_auth') === '1') {
+    document.getElementById('auth-gate').style.display = 'none';
+  }
+
+  // Enter key submits
+  document.getElementById('pw-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkAuth();
+  });
+
+  async function checkAuth() {
+    const val = document.getElementById('pw-input').value;
+    if (!val) return;
+
+    const buf  = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(val));
+    const hash = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+
+    if (hash === '74ae7b2e325d338c67e1af4dfa8fa92aa9edf57a0cfe1b21bf0408e9acb9f70b') {
+      sessionStorage.setItem('acronis_auth', '1');
+      document.getElementById('auth-gate').style.display = 'none';
+    } else {
+      const input = document.getElementById('pw-input');
+      const error = document.getElementById('pw-error');
+      input.classList.remove('shake');
+      void input.offsetWidth; // reflow to restart animation
+      input.classList.add('shake');
+      input.value = '';
+      error.style.display = 'block';
+      setTimeout(() => { error.style.display = 'none'; }, 2500);
+    }
+  }
+</script>
+
+<script src="js/app.js"></script>
+</body>
+</html>
