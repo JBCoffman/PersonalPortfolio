@@ -72,7 +72,9 @@ function router() {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
 
   // Update sidebar active state (client/device drill-downs highlight Clients)
-  const sidebarRoute = (section === 'client' || section === 'device') ? 'clients' : section;
+  const sidebarRoute = (section === 'client' || section === 'device') ? 'clients'
+    : section === 'lead-detail' ? 'marketing'
+    : section;
   document.querySelectorAll('.nav-item[data-route]').forEach(el => {
     el.classList.toggle('active', el.dataset.route === sidebarRoute);
   });
@@ -83,12 +85,15 @@ function router() {
     case 'clients':  renderClients(); break;
     case 'client':   renderClientDetail(parseInt(id)); break;
     case 'device':   renderDeviceDetail(parseInt(id)); break;
-    case 'automation': showPanel('panel-automation'); break;
-    case 'policies':   showPanel('panel-policies'); break;
-    case 'contracts':  showPanel('panel-contracts'); break;
-    case 'billing':    showPanel('panel-billing'); break;
-    case 'marketing':  showPanel('panel-marketing'); break;
-    case 'reports':    showPanel('panel-reports'); break;
+    case 'tickets':      renderTickets(); break;
+    case 'automation':   showPanel('panel-automation'); break;
+    case 'policies':     showPanel('panel-policies'); break;
+    case 'quotes':       showPanel('panel-quotes'); break;
+    case 'contracts':    showPanel('panel-contracts'); break;
+    case 'billing':      showPanel('panel-billing'); break;
+    case 'marketing':    showPanel('panel-marketing'); break;
+    case 'reports':      showPanel('panel-reports'); break;
+    case 'lead-detail':  showPanel('panel-lead-detail'); break;
     default: renderClients();
   }
 }
@@ -99,7 +104,32 @@ function showPanel(id) {
 }
 
 window.addEventListener('hashchange', router);
-window.addEventListener('DOMContentLoaded', () => { router(); });
+window.addEventListener('DOMContentLoaded', () => {
+  router();
+
+  // Mobile sidebar toggle
+  const hamburger = document.getElementById('hamburger-btn');
+  const sidebar = document.querySelector('.sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+
+  function closeSidebar() {
+    sidebar.classList.remove('is-open');
+    overlay.classList.remove('is-open');
+  }
+
+  hamburger.addEventListener('click', () => {
+    const open = sidebar.classList.toggle('is-open');
+    overlay.classList.toggle('is-open', open);
+  });
+
+  overlay.addEventListener('click', closeSidebar);
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+      if (window.innerWidth <= 640) closeSidebar();
+    });
+  });
+});
 
 // ── CLIENTS LIST ────────────────────────────────────────────────
 
@@ -176,12 +206,13 @@ function renderClientDetail(clientId) {
         </div>
       </div>
 
-      <!-- Upsell strip if issues -->
+      <!-- Upsell strip if issues 
       ${client.issues > 2 ? `
       <div class="upsell-strip">
         <span class="upsell-icon">🛡️</span>
         <span><strong>Acronis XDR</strong> can correlate these alerts into a single threat timeline. <a href="#" onclick="return false">Explore upgrade →</a></span>
-      </div>` : ''}
+      </div>` : ''} 
+      -->
 
       <!-- Device grid -->
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
@@ -272,12 +303,6 @@ function renderDeviceDetail(deviceId) {
         <span>Device has active alerts — <strong>${device.status === 'critical' ? 'immediate attention required' : 'monitoring elevated'}</strong>.</span>
         <a href="#" onclick="navigate('device/${device.id}#notes');return false" style="color:var(--red)">View Notes →</a>
       </div>` : ''}
-
-      <div class="upsell-strip">
-        <span class="upsell-icon">🤖</span>
-        <span><strong>Acronis GenAI Protection</strong> not active on this device. AI-powered threat detection available.</span>
-        <a href="#" onclick="return false">Activate →</a>
-      </div>
 
       <div class="stat-row">
         <div class="card">
@@ -430,7 +455,7 @@ function renderDeviceDetail(deviceId) {
           <div class="output">&nbsp;</div>
           <div><span class="prompt">C:\\Users\\${device.user.split('@')[0]}&gt;</span> <span class="cursor"></span></div>
         </div>
-        <p class="text-xs text-muted mt-3" style="font-style:italic">[ Live interactive terminal with command execution — coming soon ]</p>
+       <!--- <p class="text-xs text-muted mt-3" style="font-style:italic">[ Live interactive terminal with command execution — coming soon ]</p> -->
       </div>
 
       <div id="ctab-desktop" style="display:none">
